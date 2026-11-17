@@ -99,6 +99,38 @@ body.drawer-open{overflow:hidden}
 .tea-empty{text-align:center;padding:35px;color:#806f60}.tea-footer{text-align:center;font-size:9px;letter-spacing:.18em;color:#a28d7c;margin-top:35px}
 @media(max-width:620px){.tea-controls{grid-template-columns:1fr}.tea-grid{grid-template-columns:1fr}.tea-hero{padding:29px 21px}.tea-card{padding:14px}.tea-intro{display:block}.tea-intro strong{display:block;margin-bottom:4px}}
 
+
+/* FoodLab 1.6.1 — responsive and interaction hardening */
+:root{scroll-padding-top:88px}
+html,body{max-width:100%;overflow-x:hidden}
+body{ -webkit-text-size-adjust:100%; }
+button,a,[role="button"],input,select,textarea{ -webkit-tap-highlight-color:transparent; }
+button,a,[role="button"]{touch-action:manipulation}
+button{cursor:pointer}
+button:disabled,[aria-disabled="true"]{cursor:not-allowed;opacity:.55}
+:focus-visible{outline:3px solid #9ab27a!important;outline-offset:3px}
+button:not(:disabled):active,[role="button"]:active{transform:translateY(1px)}
+img,svg,video,canvas{max-width:100%;height:auto}
+input,select,textarea{font:inherit;max-width:100%}
+.menu-toggle,.drawer-close,.tea-back{min-width:44px;min-height:44px}
+.side-menu,.nutrition-drawer{overscroll-behavior:contain;-webkit-overflow-scrolling:touch}
+.menu-backdrop,.drawer-backdrop{touch-action:pan-y}
+.side-menu-links a,.side-menu-links button{min-height:58px;touch-action:manipulation}
+@media(max-width:760px){
+  .side-menu{width:min(88vw,360px);max-width:360px}
+  .nutrition-drawer{width:min(100vw,480px);max-width:100vw;padding-bottom:calc(20px + env(safe-area-inset-bottom))}
+  .menu-toggle{min-width:44px;min-height:44px}
+  .container,.wrap,.page-wrap{width:min(100% - 28px,100%)}
+  .grid,.product-grid,.cards-grid{grid-template-columns:repeat(2,minmax(0,1fr))}
+}
+@media(max-width:420px){
+  .grid,.product-grid,.cards-grid{grid-template-columns:minmax(0,1fr)}
+  .hero h1{font-size:clamp(38px,12vw,56px)}
+}
+@media(prefers-reduced-motion:reduce){
+  *,*::before,*::after{scroll-behavior:auto!important;animation-duration:.01ms!important;animation-iteration-count:1!important;transition-duration:.01ms!important}
+}
+
 </style></head><body>
 <header><div class="wrap nav"><button type="button" class="menu-toggle" id="menuToggle" aria-label="Открыть меню" aria-expanded="false"><span></span><span></span><span></span></button><a class="brand" href="#home"><span class="mark">f.</span> foodlab</a><span class="nav-spacer"></span><button type="button" class="lang" id="langBtn">DE / RU</button></div></header>
 <main id="home"><div class="wrap">
@@ -368,6 +400,55 @@ setLang(lang);
  // The site's language switch updates documentElement.lang; refresh the tea interface on return/open.
  const langButton=document.getElementById('langBtn');
  langButton?.addEventListener('click',()=>{if(!page.hidden)setTimeout(()=>{initCategories();render();},0);});
+})();
+</script>
+
+
+<script>
+/* Interaction safety net: delegated taps, keyboard access and reliable section switching. */
+(function(){
+ const $=id=>document.getElementById(id);
+ const menu=$('sideMenu'), shade=$('menuBackdrop'), toggle=$('menuToggle');
+ const drawer=$('nutritionDrawer'), dshade=$('drawerBackdrop');
+ const tea=$('teaPage'), main=document.querySelector('main'), footer=document.querySelector('footer.footer');
+ function closeMenu(){
+  menu?.classList.remove('open');shade?.classList.remove('show');
+  menu?.setAttribute('aria-hidden','true');shade?.setAttribute('aria-hidden','true');
+  toggle?.setAttribute('aria-expanded','false');document.body.classList.remove('menu-open');
+ }
+ function openMenu(){
+  menu?.classList.add('open');shade?.classList.add('show');
+  menu?.setAttribute('aria-hidden','false');shade?.setAttribute('aria-hidden','false');
+  toggle?.setAttribute('aria-expanded','true');document.body.classList.add('menu-open');
+ }
+ function closeDrawer(){
+  drawer?.classList.remove('open');dshade?.classList.remove('show');
+  drawer?.setAttribute('aria-hidden','true');dshade?.setAttribute('aria-hidden','true');
+  document.body.classList.remove('drawer-open');
+ }
+ function showTea(){
+  if(!tea)return;
+  closeMenu();closeDrawer();
+  if(main)main.hidden=true;if(footer)footer.hidden=true;tea.hidden=false;
+  window.scrollTo(0,0);
+ }
+ function hideTea(){
+  if(!tea)return;tea.hidden=true;if(main)main.hidden=false;if(footer)footer.hidden=false;
+  window.scrollTo(0,0);
+ }
+ document.addEventListener('click',function(e){
+  const el=e.target instanceof Element?e.target:null;if(!el)return;
+  if(el.closest('#menuToggle')){e.preventDefault();openMenu();return;}
+  if(el.closest('#menuClose')||el===shade){e.preventDefault();closeMenu();return;}
+  if(el.closest('#openNutrition')){e.preventDefault();closeMenu();drawer?.classList.add('open');dshade?.classList.add('show');drawer?.setAttribute('aria-hidden','false');dshade?.setAttribute('aria-hidden','false');document.body.classList.add('drawer-open');return;}
+  if(el.closest('#drawerClose')||el===dshade){e.preventDefault();closeDrawer();return;}
+  if(el.closest('#openTea')){e.preventDefault();showTea();return;}
+  if(el.closest('#teaBack')){e.preventDefault();hideTea();return;}
+  if(el.closest('#sideMenu a[data-menu-close],#openNotes'))closeMenu();
+ },false);
+ document.addEventListener('keydown',e=>{
+  if(e.key==='Escape'){closeMenu();closeDrawer();if(tea&&!tea.hidden)hideTea();}
+ });
 })();
 </script>
 
