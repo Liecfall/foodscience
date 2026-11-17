@@ -124,6 +124,62 @@ body.drawer-open{overflow:hidden}
  <div id="diaryList" class="diary-list" aria-live="polite"></div>
  <p class="diary-foot">Расчёт ориентировочный. Для точных значений сверяйся с упаковкой продукта.</p>
 </aside>
+
+<style>
+/* FoodLab 1.5.1 — robust mobile menu interaction */
+header{position:sticky;top:0;z-index:70}
+.menu-toggle{position:relative;z-index:71;pointer-events:auto;touch-action:manipulation;-webkit-tap-highlight-color:transparent}
+.menu-backdrop{z-index:80;pointer-events:none}
+.menu-backdrop.show{pointer-events:auto}
+.side-menu{z-index:81;pointer-events:auto;overscroll-behavior:contain}
+.drawer-backdrop{z-index:82;pointer-events:none}
+.drawer-backdrop.show{pointer-events:auto}
+.nutrition-drawer{z-index:83;overscroll-behavior:contain}
+</style>
+<script>
+/* Independent event delegation: keeps the navigation usable on mobile Safari. */
+(function(){
+  const byId=id=>document.getElementById(id);
+  const menu=byId('sideMenu'), shade=byId('menuBackdrop'), toggle=byId('menuToggle');
+  const nutrition=byId('nutritionDrawer'), nutritionShade=byId('drawerBackdrop');
+  if(!menu||!shade||!toggle) return;
+  function menuOpen(){
+    menu.classList.add('open'); shade.classList.add('show');
+    menu.setAttribute('aria-hidden','false'); shade.setAttribute('aria-hidden','false');
+    toggle.setAttribute('aria-expanded','true'); document.body.classList.add('menu-open');
+  }
+  function menuClose(){
+    menu.classList.remove('open'); shade.classList.remove('show');
+    menu.setAttribute('aria-hidden','true'); shade.setAttribute('aria-hidden','true');
+    toggle.setAttribute('aria-expanded','false'); document.body.classList.remove('menu-open');
+  }
+  function drawerOpen(){
+    if(!nutrition||!nutritionShade) return;
+    nutrition.classList.add('open'); nutritionShade.classList.add('show');
+    nutrition.setAttribute('aria-hidden','false'); nutritionShade.setAttribute('aria-hidden','false');
+    document.body.classList.add('drawer-open');
+  }
+  function drawerClose(){
+    if(!nutrition||!nutritionShade) return;
+    nutrition.classList.remove('open'); nutritionShade.classList.remove('show');
+    nutrition.setAttribute('aria-hidden','true'); nutritionShade.setAttribute('aria-hidden','true');
+    document.body.classList.remove('drawer-open');
+  }
+  document.addEventListener('click',function(e){
+    const t=e.target.closest('#menuToggle');
+    if(t){e.preventDefault();e.stopImmediatePropagation();menuOpen();return;}
+    if(e.target.closest('#menuClose')||e.target===shade){e.preventDefault();e.stopImmediatePropagation();menuClose();return;}
+    if(e.target.closest('#openNutrition')){e.preventDefault();e.stopImmediatePropagation();menuClose();drawerOpen();return;}
+    if(e.target.closest('#openNotes')){menuClose();return;}
+    if(e.target.closest('#drawerClose')||e.target===nutritionShade){e.preventDefault();e.stopImmediatePropagation();drawerClose();return;}
+    if(e.target.closest('#sideMenu [data-menu-close]')) menuClose();
+  },true);
+  document.addEventListener('keydown',function(e){
+    if(e.key==='Escape'){menuClose();drawerClose();}
+  });
+})();
+</script>
+
 <script>
 const foods=[
 ["chicken","meat","🍗","Куриная грудка","Hähnchenbrust","Постное мясо птицы, часто используемое как источник белка.","Mageres Geflügelfleisch und eine häufige Proteinquelle.",23.1,1.2,0,110,"Может быть перекрёстный контакт с аллергенами; смотри упаковку.","Spuren von Allergenen durch Kreuzkontakt sind möglich; Verpackung prüfen.","Хранить охлаждённой согласно маркировке. Отделять сырое мясо от готовых продуктов.","Gekühlt gemäß Kennzeichnung lagern. Rohes Fleisch von verzehrfertigen Lebensmitteln trennen.","Обычно проходит обвалку, охлаждение или замораживание и упаковку. Перед употреблением требуется достаточная тепловая обработка.","Wird typischerweise zerlegt, gekühlt oder tiefgefroren und verpackt. Vor dem Verzehr ausreichend durcherhitzen."],
