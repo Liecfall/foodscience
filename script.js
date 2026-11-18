@@ -46,30 +46,34 @@ let lang=localStorage.getItem("foodlab-lang")||"ru",activeCat="all";const $=s=>d
 function fobj(a){return{id:a[0],cat:a[1],emoji:a[2],ru:a[3],de:a[4],descRu:a[5],descDe:a[6],p:a[7],fat:a[8],carb:a[9],cal:a[10],allRu:a[11],allDe:a[12],storeRu:a[13],storeDe:a[14],procRu:a[15],procDe:a[16]}}
 const data=foods.map(fobj),catKey={dairy:"dairy",meat:"meat",fish:"fish",grain:"grain",fruit:"fruit",other:"other",legumes:"legumes",oils:"oils",drinks:"drinks",snacks:"snacks",prepared:"prepared"};
 function list(){let q=$("#search").value.trim().toLocaleLowerCase();return data.filter(f=>(activeCat==="all"||f.cat===activeCat)&&(!q||[f.ru,f.de].some(v=>v.toLocaleLowerCase().includes(q))))}
-function render(){let a=list();$("#count").textContent=`${t("countLabel")}: ${a.length} ${t("products")}`;$("#products").innerHTML=a.length?a.map(f=>`<article class="product" tabindex="0" role="button" data-id="${f.id}"><div class="prod-top"><span class="emoji">${f.emoji}</span><span class="tag">${t(catKey[f.cat])}</span></div><h3>${esc(lang==="ru"?f.ru:f.de)}</h3><div class="sub">${esc(lang==="ru"?f.de:f.ru)}</div><p class="desc">${esc(lang==="ru"?f.descRu:f.descDe)}</p><div class="macros"><div class="macro"><strong>${f.p} g</strong><span>${t("protein")}</span></div><div class="macro"><strong>${f.fat} g</strong><span>${t("fat")}</span></div><div class="macro"><strong>${f.carb} g</strong><span>${t("carbs")}</span></div><div class="macro"><strong>${f.cal}</strong><span>kcal</span></div></div><div class="open-label">${t("open")}</div></article>`).join(""):`<div class="info-card">${t("noResults")}</div>`}
+function render(){let a=list();$("#count").textContent=`${t("countLabel")}: ${a.length} ${t("products")}`;$("#products").innerHTML=a.length?a.map(f=>`<article class="product" tabindex="0" role="button" data-id="${f.id}"><div class="prod-top"><span class="emoji">${f.emoji}</span><span class="tag">${f.external?"OPEN FOOD FACTS":t(catKey[f.cat])}</span></div><h3>${esc(lang==="ru"?f.ru:f.de)}</h3><div class="sub">${f.brand?esc(f.brand)+" · ":""}${esc(lang==="ru"?f.de:f.ru)}</div><p class="desc">${esc(lang==="ru"?f.descRu:f.descDe)}</p><div class="macros"><div class="macro"><strong>${f.p} g</strong><span>${t("protein")}</span></div><div class="macro"><strong>${f.fat} g</strong><span>${t("fat")}</span></div><div class="macro"><strong>${f.carb} g</strong><span>${t("carbs")}</span></div><div class="macro"><strong>${f.cal}</strong><span>kcal</span></div></div><div class="open-label">${t("open")}</div></article>`).join(""):`<div class="info-card">${t("noResults")}</div>`}
 function renderSelect(){let s=$("#foodSelect"),old=s.value;s.innerHTML=data.map(f=>`<option value="${f.id}">${esc(lang==="ru"?f.ru:f.de)}</option>`).join("");if(data.some(f=>f.id===old))s.value=old;let ds=$("#drawerFoodSelect"),dold=ds.value;ds.innerHTML=data.map(f=>`<option value="${f.id}">${esc(lang==="ru"?f.ru:f.de)}</option>`).join("");if(data.some(f=>f.id===dold))ds.value=dold;calc();calcDrawer()}
 function calc(){let f=data.find(x=>x.id===$("#foodSelect").value)||data[0],g=Math.max(0,Math.min(5000,Number($("#grams").value)||0)),m=g/100;$("#result").innerHTML=`<small>${t("portionResult")} · ${g} g</small><strong>${(f.cal*m).toFixed(0)} kcal</strong><small>${(f.cal*m*4.184).toFixed(0)} ${t("kJ")}</small><div class="macros"><div class="macro"><strong>${(f.p*m).toFixed(1)} g</strong><span>${t("protein")}</span></div><div class="macro"><strong>${(f.fat*m).toFixed(1)} g</strong><span>${t("fat")}</span></div><div class="macro"><strong>${(f.carb*m).toFixed(1)} g</strong><span>${t("carbs")}</span></div></div>`}
 function openProduct(id){let f=data.find(x=>x.id===id),ru=lang==="ru";if(!f)return;$("#modalContent").innerHTML=`<div class="kicker">${t(catKey[f.cat])}</div><div style="font-size:42px;margin-top:8px">${f.emoji}</div><h2 class="modal-title" id="modalTitle">${esc(ru?f.ru:f.de)}</h2><div class="modal-sub">${esc(ru?f.de:f.ru)}</div><div class="modal-cols"><div><h4>${t("description")}</h4><p>${esc(ru?f.descRu:f.descDe)}</p><h4>${t("allergens")}</h4><p>${esc(ru?f.allRu:f.allDe)}</p><h4>${t("storage")}</h4><p>${esc(ru?f.storeRu:f.storeDe)}</p></div><div><h4>${t("energy")} · 100 g</h4><table class="nutri-table"><tr><td>${t("energy")}</td><td>${f.cal} kcal</td></tr><tr><td>${t("protein")}</td><td>${f.p} g</td></tr><tr><td>${t("fat")}</td><td>${f.fat} g</td></tr><tr><td>${t("carbs")}</td><td>${f.carb} g</td></tr></table><h4 style="margin-top:18px">${t("production")}</h4><p>${esc(ru?f.procRu:f.procDe)}</p></div></div><div class="disclaimer">${esc(t("sourceNote"))}</div>`;$("#modal").classList.add("show");$("#closeModal").focus()}
 function categoryCards(){let cats=[["dairy","🥛","catDairy"],["meat","🍗","catMeat"],["fish","🐟","catFish"],["grain","🌾","catGrain"],["fruit","🥦","catFruit"],["legumes","🫘","legumes"],["oils","🫒","oils"],["drinks","🥤","drinks"],["snacks","🍫","snacks"],["prepared","🍱","prepared"],["other","🫒","catOther"]];$("#categoryGrid").innerHTML=cats.map(([c,e,k])=>`<button type="button" class="category" data-jump="${c}"><span class="emoji">${e}</span><strong>${t(k)}</strong><span>${data.filter(f=>f.cat===c).length} ${t("products")}</span></button>`).join("")}
+// Open Food Facts: manual search only (their search API is rate-limited; no search-as-you-type).
+const OFF_BASE="https://world.openfoodfacts.org/cgi/search.pl";
+let offProducts=[];
+function offCategory(tags=[]){const x=tags.join(" ").toLowerCase();if(/dairy|milk|cheese|yogurt/.test(x))return "dairy";if(/meat|poultry|chicken|beef|pork/.test(x))return "meat";if(/fish|seafood/.test(x))return "fish";if(/cereal|grain|bread|pasta|rice/.test(x))return "grain";if(/fruit|vegetable/.test(x))return "fruit";if(/beverage|drink|water|juice/.test(x))return "drinks";return "other"}
+function normalizeOFF(p){const n=p.nutriments||{},ru=p.product_name_ru||p.product_name||p.product_name_de||"Без названия",de=p.product_name_de||p.product_name||ru;const kcal=Number(n["energy-kcal_100g"]??(Number(n["energy_100g"]||0)/4.184))||0;const protein=Number(n.proteins_100g)||0,fat=Number(n.fat_100g)||0,carb=Number(n.carbohydrates_100g)||0;return {id:"off-"+(p.code||Math.random().toString(36).slice(2)),cat:offCategory(p.categories_tags||[]),emoji:"📦",ru,de,descRu:(p.ingredients_text||"Сведения об ингредиентах не указаны.").slice(0,260),descDe:(p.ingredients_text_de||p.ingredients_text||"Keine Zutatenangaben verfügbar.").slice(0,260),p:protein,fat,carb,cal:kcal,allRu:p.allergens||"Не указано в базе — проверь упаковку.",allDe:p.allergens||"In der Datenbank nicht angegeben — Verpackung prüfen.",storeRu:"Следуй условиям хранения на упаковке.",storeDe:"Lagerhinweise auf der Verpackung beachten.",procRu:"Данные получены из Open Food Facts. Сведения могут быть неполными.",procDe:"Daten von Open Food Facts; Angaben können unvollständig sein.",brand:p.brands||"",image:p.image_front_small_url||p.image_url||"",barcode:p.code||"",external:true}}
+async function searchOpenFoodFacts(){const q=$("#search").value.trim();const status=$("#databaseStatus");if(q.length<2){status.textContent=lang==="ru"?"Введи название продукта (минимум 2 символа).":"Bitte mindestens 2 Zeichen eingeben.";return;}const btn=$("#offSearchBtn");btn.disabled=true;status.textContent=lang==="ru"?"Ищем в Open Food Facts…":"Suche in Open Food Facts…";try{const params=new URLSearchParams({search_terms:q,search_simple:"1",action:"process",json:"1",page_size:"24",page:"1",lc:lang,fields:"code,product_name,product_name_ru,product_name_de,brands,categories_tags,nutriments,ingredients_text,ingredients_text_de,allergens,image_front_small_url,image_url"});const response=await fetch(OFF_BASE+"?"+params.toString(),{headers:{Accept:"application/json"}});if(!response.ok)throw new Error("HTTP "+response.status);const json=await response.json();offProducts=(json.products||[]).filter(p=>p.product_name&&p.nutriments).map(normalizeOFF);const local=data.filter(x=>!x.external);data.splice(0,data.length,...local,...offProducts);activeCat="all";document.querySelectorAll(".chip").forEach(b=>b.classList.toggle("active",b.dataset.cat==="all"));render();renderSelect();status.textContent=lang==="ru"?`Найдено ${offProducts.length} продуктов из Open Food Facts. Нажми на карточку для подробностей.`:`${offProducts.length} Produkte aus Open Food Facts gefunden. Karte für Details öffnen.`;if(!offProducts.length)status.textContent=lang==="ru"?"Ничего не найдено. Попробуй другое название или немецкое написание.":"Keine Treffer. Anderen oder deutschen Suchbegriff versuchen.";}catch(err){status.textContent=lang==="ru"?"Не удалось подключиться к Open Food Facts. Проверь интернет и попробуй позже.":"Open Food Facts ist nicht erreichbar. Internet prüfen und später erneut versuchen.";console.error("Open Food Facts",err);}finally{btn.disabled=false;}}
+$("#offSearchBtn").addEventListener("click",searchOpenFoodFacts);
+
 function setLang(n){lang=n;localStorage.setItem("foodlab-lang",n);document.documentElement.lang=n;document.querySelectorAll("[data-t]").forEach(e=>e.textContent=t(e.dataset.t));document.querySelectorAll("[data-html]").forEach(e=>e.innerHTML=t(e.dataset.html));$("#search").placeholder=t("searchPlaceholder");$("#freeNotes").placeholder=lang==="ru"?$("#freeNotes").dataset.placeholderRu:$("#freeNotes").dataset.placeholderDe;$("#langBtn").textContent=n==="ru"?"DE / RU":"RU / DE";document.title=n==="ru"?"FoodLab — энциклопедия продуктов":"FoodLab — Lebensmittel-Enzyklopädie";document.querySelectorAll(".chip").forEach(b=>b.textContent=t(b.dataset.cat==="all"?"all":b.dataset.cat));render();renderSelect();categoryCards()}
 function setCat(c){activeCat=c;document.querySelectorAll(".chip").forEach(b=>b.classList.toggle("active",b.dataset.cat===c));render();$("#catalog").scrollIntoView({behavior:"smooth"})}
 $("#langBtn").onclick=()=>setLang(lang==="ru"?"de":"ru");$("#search").oninput=render;$("#filters").onclick=e=>{let b=e.target.closest("[data-cat]");if(b)setCat(b.dataset.cat)};$("#categoryGrid").onclick=e=>{let b=e.target.closest("[data-jump]");if(b)setCat(b.dataset.jump)};$("#reset").onclick=()=>{$("#search").value="";setCat("all")};$("#products").onclick=e=>{let c=e.target.closest("[data-id]");if(c)openProduct(c.dataset.id)};$("#products").onkeydown=e=>{if((e.key==="Enter"||e.key===" ")&&e.target.matches("[data-id]")){e.preventDefault();openProduct(e.target.dataset.id)}};$("#foodSelect").onchange=calc;$("#grams").oninput=calc;$("#closeModal").onclick=()=>$("#modal").classList.remove("show");$("#modal").onclick=e=>{if(e.target===$("#modal"))$("#modal").classList.remove("show")};document.onkeydown=e=>{if(e.key==="Escape")$("#modal").classList.remove("show")};$("#year").textContent=new Date().getFullYear();
 const FREE_NOTE_KEY="foodlab-free-notes-v1";
-const notebookModal=$("#notebookModal"),freeNotes=$("#freeNotes");
-function openNotebook(){notebookModal.classList.add("show");setTimeout(()=>freeNotes.focus(),40)}
-function closeNotebook(){notebookModal.classList.remove("show")}
+const freeNotes=$("#freeNotes");
 function saveFreeNotes(){
  try{localStorage.setItem(FREE_NOTE_KEY,freeNotes.value);$("#noteStatus").textContent=lang==="ru"?"Сохранено на этом устройстве":"Auf diesem Gerät gespeichert"}
  catch{$("#noteStatus").textContent=lang==="ru"?"Не удалось сохранить. Проверь память браузера.":"Speichern fehlgeschlagen. Bitte Browserspeicher prüfen."}
 }
 try{freeNotes.value=localStorage.getItem(FREE_NOTE_KEY)||""}catch{}
-$("#closeNotebook").addEventListener("click",closeNotebook);
 $("#clearFreeNotes").addEventListener("click",()=>{
  if(!freeNotes.value)return;
  if(confirm(lang==="ru"?"Очистить весь текст блокнота?":"Den gesamten Notiztext löschen?")){freeNotes.value="";saveFreeNotes();freeNotes.focus()}
 });
 freeNotes.addEventListener("input",saveFreeNotes);
-notebookModal.addEventListener("click",e=>{if(e.target===notebookModal)closeNotebook()});
 
 const DIARY_KEY="foodlab-nutrition-diary-v1";
 const drawer=$("#nutritionDrawer"),backdrop=$("#drawerBackdrop");
@@ -154,7 +158,6 @@ setLang(lang);
   const menuToggle = $('menuToggle');
   const nutrition = $('nutritionDrawer');
   const nutritionBackdrop = $('drawerBackdrop');
-  const notebook = $('notebookModal');
   const productModal = $('modal');
   const teaPage = $('teaPage');
   const main = document.querySelector('main');
@@ -185,12 +188,6 @@ setLang(lang);
     $('drawerClose')?.focus();
     document.dispatchEvent(new CustomEvent('foodlab:drawer-open'));
   }
-  function openNotes() {
-    closeMenu();
-    if (!notebook) return;
-    notebook.classList.add('show');
-    window.setTimeout(() => $('freeNotes')?.focus(), 40);
-  }
   function openTea() {
     closeMenu(); closeDrawer();
     if (!teaPage) return;
@@ -210,7 +207,6 @@ setLang(lang);
   }
   function closeOverlays() {
     closeMenu(); closeDrawer();
-    notebook?.classList.remove('show');
     productModal?.classList.remove('show');
     if (teaPage && !teaPage.hidden) closeTea();
   }
@@ -234,9 +230,6 @@ setLang(lang);
     if (target.closest('#drawerClose') || target === nutritionBackdrop) {
       event.preventDefault(); closeDrawer(); return;
     }
-    if (target.closest('#openNotes')) {
-      event.preventDefault(); openNotes(); return;
-    }
     if (target.closest('#openTea')) {
       event.preventDefault(); openTea(); return;
     }
@@ -244,7 +237,6 @@ setLang(lang);
       event.preventDefault(); closeTea(); return;
     }
     if (target.closest('#sideMenu a[data-menu-close]')) closeMenu();
-    if (target.closest('#closeNotebook')) notebook?.classList.remove('show');
     if (target.closest('#closeModal')) productModal?.classList.remove('show');
   });
 

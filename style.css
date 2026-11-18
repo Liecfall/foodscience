@@ -169,3 +169,16 @@ img,svg,video{max-width:100%;height:auto}
 @media(prefers-reduced-motion:reduce){
  *,*::before,*::after{scroll-behavior:auto!important;animation-duration:.01ms!important;animation-iteration-count:1!important;transition-duration:.01ms!important}
 }
+
+/* Open Food Facts integration and notes inside the nutrition drawer */
+.database-note{margin:9px 0 14px;color:var(--muted);font-size:11px;line-height:1.5}
+.database-credit{margin:14px 0 0;color:var(--muted);font-size:11px;line-height:1.5}
+.database-credit a{color:var(--green);text-underline-offset:3px}
+#offSearchBtn:disabled{opacity:.55;cursor:wait;transform:none}
+.drawer-notebook{margin-top:22px;padding-top:16px;border-top:1px solid var(--line)}
+.drawer-notebook .diary-head{margin-top:0;border-top:0;padding-top:0;align-items:center}
+.drawer-notebook .diary-head h3{font:600 21px Georgia,serif}
+.drawer-notebook .note-saved{font-size:10px;color:var(--muted);text-align:right}
+.drawer-notebook .free-notes{min-height:160px;max-height:34vh;resize:vertical;font-size:14px}
+.drawer-notebook .notebook-modal-foot{justify-content:flex-end}
+@media(max-width:560px){.drawer-notebook .free-notes{min-height:140px}.catalog-tools #offSearchBtn{width:100%}}
