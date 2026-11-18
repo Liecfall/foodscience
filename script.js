@@ -1,48 +1,4 @@
 
-/* Independent event delegation: keeps the navigation usable on mobile Safari. */
-(function(){
-  const byId=id=>document.getElementById(id);
-  const menu=byId('sideMenu'), shade=byId('menuBackdrop'), toggle=byId('menuToggle');
-  const nutrition=byId('nutritionDrawer'), nutritionShade=byId('drawerBackdrop');
-  if(!menu||!shade||!toggle) return;
-  function menuOpen(){
-    menu.classList.add('open'); shade.classList.add('show');
-    menu.setAttribute('aria-hidden','false'); shade.setAttribute('aria-hidden','false');
-    toggle.setAttribute('aria-expanded','true'); document.body.classList.add('menu-open');
-  }
-  function menuClose(){
-    menu.classList.remove('open'); shade.classList.remove('show');
-    menu.setAttribute('aria-hidden','true'); shade.setAttribute('aria-hidden','true');
-    toggle.setAttribute('aria-expanded','false'); document.body.classList.remove('menu-open');
-  }
-  function drawerOpen(){
-    if(!nutrition||!nutritionShade) return;
-    nutrition.classList.add('open'); nutritionShade.classList.add('show');
-    nutrition.setAttribute('aria-hidden','false'); nutritionShade.setAttribute('aria-hidden','false');
-    document.body.classList.add('drawer-open');
-  }
-  function drawerClose(){
-    if(!nutrition||!nutritionShade) return;
-    nutrition.classList.remove('open'); nutritionShade.classList.remove('show');
-    nutrition.setAttribute('aria-hidden','true'); nutritionShade.setAttribute('aria-hidden','true');
-    document.body.classList.remove('drawer-open');
-  }
-  document.addEventListener('click',function(e){
-    const t=e.target.closest('#menuToggle');
-    if(t){e.preventDefault();e.stopImmediatePropagation();menuOpen();return;}
-    if(e.target.closest('#menuClose')||e.target===shade){e.preventDefault();e.stopImmediatePropagation();menuClose();return;}
-    if(e.target.closest('#openNutrition')){e.preventDefault();e.stopImmediatePropagation();menuClose();drawerOpen();return;}
-    if(e.target.closest('#openNotes')){menuClose();return;}
-    if(e.target.closest('#drawerClose')||e.target===nutritionShade){e.preventDefault();e.stopImmediatePropagation();drawerClose();return;}
-    if(e.target.closest('#sideMenu [data-menu-close]')) menuClose();
-  },true);
-  document.addEventListener('keydown',function(e){
-    if(e.key==='Escape'){menuClose();drawerClose();}
-  });
-})();
-
-
-
 const foods=[
 ["chicken","meat","🍗","Куриная грудка","Hähnchenbrust","Постное мясо птицы, часто используемое как источник белка.","Mageres Geflügelfleisch und eine häufige Proteinquelle.",23.1,1.2,0,110,"Может быть перекрёстный контакт с аллергенами; смотри упаковку.","Spuren von Allergenen durch Kreuzkontakt sind möglich; Verpackung prüfen.","Хранить охлаждённой согласно маркировке. Отделять сырое мясо от готовых продуктов.","Gekühlt gemäß Kennzeichnung lagern. Rohes Fleisch von verzehrfertigen Lebensmitteln trennen.","Обычно проходит обвалку, охлаждение или замораживание и упаковку. Перед употреблением требуется достаточная тепловая обработка.","Wird typischerweise zerlegt, gekühlt oder tiefgefroren und verpackt. Vor dem Verzehr ausreichend durcherhitzen."],
 ["egg","meat","🥚","Яйцо куриное","Hühnerei","Универсальный продукт с белком и жирами, важный ингредиент в кулинарии.","Vielseitiges Lebensmittel mit Protein und Fett.",12.6,10.6,1.1,143,"Яйцо — аллерген, который должен быть обозначен в маркировке.","Ei ist ein kennzeichnungspflichtiges Allergen.","Соблюдай условия и срок хранения на упаковке; избегай загрязнения готовой еды скорлупой.","Lagerbedingungen und Mindesthaltbarkeitsdatum beachten; Kontakt der Schale mit verzehrfertigen Speisen vermeiden.","Сортировка, проверка, маркировка и упаковка. Яйца также используют в переработанных продуктах.","Sortierung, Prüfung, Kennzeichnung und Verpackung. Eier werden auch in verarbeiteten Lebensmitteln verwendet."],
@@ -107,7 +63,6 @@ function saveFreeNotes(){
  catch{$("#noteStatus").textContent=lang==="ru"?"Не удалось сохранить. Проверь память браузера.":"Speichern fehlgeschlagen. Bitte Browserspeicher prüfen."}
 }
 try{freeNotes.value=localStorage.getItem(FREE_NOTE_KEY)||""}catch{}
-$("#openNotebook").addEventListener("click",openNotebook);
 $("#closeNotebook").addEventListener("click",closeNotebook);
 $("#clearFreeNotes").addEventListener("click",()=>{
  if(!freeNotes.value)return;
@@ -115,7 +70,6 @@ $("#clearFreeNotes").addEventListener("click",()=>{
 });
 freeNotes.addEventListener("input",saveFreeNotes);
 notebookModal.addEventListener("click",e=>{if(e.target===notebookModal)closeNotebook()});
-document.addEventListener("keydown",e=>{if(e.key==="Escape"){closeNotebook();$("#modal").classList.remove("show")}});
 
 const DIARY_KEY="foodlab-nutrition-diary-v1";
 const drawer=$("#nutritionDrawer"),backdrop=$("#drawerBackdrop");
@@ -131,14 +85,6 @@ function drawDiary(){
  if(!entries.length){box.innerHTML=`<div class="diary-empty">${t("diaryEmpty")}</div>`;return}
  box.innerHTML=entries.map((x,i)=>`<div class="diary-item"><div><strong>${esc(x.name)} · ${x.grams} g</strong><small>${x.date}</small></div><b>${x.kcal} kcal</b></div>`).join("");
 }
-const sideMenu=$("#sideMenu"),menuBackdrop=$("#menuBackdrop");
-function openMenu(){sideMenu.classList.add("open");menuBackdrop.classList.add("show");sideMenu.setAttribute("aria-hidden","false");menuBackdrop.setAttribute("aria-hidden","false");document.body.classList.add("menu-open");$("#menuToggle").setAttribute("aria-expanded","true");$("#menuClose").focus()}
-function closeMenu(){sideMenu.classList.remove("open");menuBackdrop.classList.remove("show");sideMenu.setAttribute("aria-hidden","true");menuBackdrop.setAttribute("aria-hidden","true");document.body.classList.remove("menu-open");$("#menuToggle").setAttribute("aria-expanded","false")}
-$("#menuToggle").addEventListener("click",openMenu);$("#menuClose").addEventListener("click",closeMenu);menuBackdrop.addEventListener("click",closeMenu);
-sideMenu.querySelectorAll("[data-menu-close]").forEach(a=>a.addEventListener("click",closeMenu));
-$("#openNutrition").addEventListener("click",openDrawer);$("#openNotes").addEventListener("click",()=>{closeMenu();openNotebook()});
-$("#drawerClose").addEventListener("click",closeDrawer);
-backdrop.addEventListener("click",closeDrawer);
 $("#drawerFoodSelect").addEventListener("change",calcDrawer);
 $("#drawerGrams").addEventListener("input",calcDrawer);
 $("#addDiary").addEventListener("click",()=>{
@@ -147,7 +93,6 @@ $("#addDiary").addEventListener("click",()=>{
  try{localStorage.setItem(DIARY_KEY,JSON.stringify(entries.slice(0,100)));drawDiary();$("#addDiary").textContent=t("diarySaved");setTimeout(()=>$("#addDiary").textContent=t("addDiary"),1400)}catch{alert(lang==="ru"?"Не удалось сохранить дневник в браузере.":"Das Tagebuch konnte im Browser nicht gespeichert werden.")}
 });
 $("#clearDiary").addEventListener("click",()=>{if(readDiary().length&&confirm(t("diaryConfirm"))){localStorage.removeItem(DIARY_KEY);drawDiary()}});
-document.addEventListener("keydown",e=>{if(e.key==="Escape"){closeDrawer();closeMenu()}});
 drawDiary();
 setLang(lang);
 
@@ -189,12 +134,7 @@ setLang(lang);
   page.hidden=true;document.querySelector('main').hidden=false;
   document.querySelector('footer.footer').hidden=false;window.scrollTo({top:0,behavior:'smooth'});
  }
- document.addEventListener('click',e=>{
-  if(e.target.closest('#openTea')){e.preventDefault();document.getElementById('menuClose')?.click();showTea();}
-  if(e.target.closest('#teaBack'))hideTea();
- },true);
  search.addEventListener('input',render);category.addEventListener('change',render);
- document.addEventListener('keydown',e=>{if(e.key==='Escape'&&!page.hidden)hideTea();});
  const oldSetLang=window.setLang;
  // The site's language switch updates documentElement.lang; refresh the tea interface on return/open.
  const langButton=document.getElementById('langBtn');
@@ -203,48 +143,117 @@ setLang(lang);
 
 
 
-/* Interaction safety net: delegated taps, keyboard access and reliable section switching. */
-(function(){
- const $=id=>document.getElementById(id);
- const menu=$('sideMenu'), shade=$('menuBackdrop'), toggle=$('menuToggle');
- const drawer=$('nutritionDrawer'), dshade=$('drawerBackdrop');
- const tea=$('teaPage'), main=document.querySelector('main'), footer=document.querySelector('footer.footer');
- function closeMenu(){
-  menu?.classList.remove('open');shade?.classList.remove('show');
-  menu?.setAttribute('aria-hidden','true');shade?.setAttribute('aria-hidden','true');
-  toggle?.setAttribute('aria-expanded','false');document.body.classList.remove('menu-open');
- }
- function openMenu(){
-  menu?.classList.add('open');shade?.classList.add('show');
-  menu?.setAttribute('aria-hidden','false');shade?.setAttribute('aria-hidden','false');
-  toggle?.setAttribute('aria-expanded','true');document.body.classList.add('menu-open');
- }
- function closeDrawer(){
-  drawer?.classList.remove('open');dshade?.classList.remove('show');
-  drawer?.setAttribute('aria-hidden','true');dshade?.setAttribute('aria-hidden','true');
-  document.body.classList.remove('drawer-open');
- }
- function showTea(){
-  if(!tea)return;
-  closeMenu();closeDrawer();
-  if(main)main.hidden=true;if(footer)footer.hidden=true;tea.hidden=false;
-  window.scrollTo(0,0);
- }
- function hideTea(){
-  if(!tea)return;tea.hidden=true;if(main)main.hidden=false;if(footer)footer.hidden=false;
-  window.scrollTo(0,0);
- }
- document.addEventListener('click',function(e){
-  const el=e.target instanceof Element?e.target:null;if(!el)return;
-  if(el.closest('#menuToggle')){e.preventDefault();openMenu();return;}
-  if(el.closest('#menuClose')||el===shade){e.preventDefault();closeMenu();return;}
-  if(el.closest('#openNutrition')){e.preventDefault();closeMenu();drawer?.classList.add('open');dshade?.classList.add('show');drawer?.setAttribute('aria-hidden','false');dshade?.setAttribute('aria-hidden','false');document.body.classList.add('drawer-open');return;}
-  if(el.closest('#drawerClose')||el===dshade){e.preventDefault();closeDrawer();return;}
-  if(el.closest('#openTea')){e.preventDefault();showTea();return;}
-  if(el.closest('#teaBack')){e.preventDefault();hideTea();return;}
-  if(el.closest('#sideMenu a[data-menu-close],#openNotes'))closeMenu();
- },false);
- document.addEventListener('keydown',e=>{
-  if(e.key==='Escape'){closeMenu();closeDrawer();if(tea&&!tea.hidden)hideTea();}
- });
+
+
+/* Unified interaction controller: one click path for navigation, drawers and overlays. */
+(function () {
+  'use strict';
+  const $ = (id) => document.getElementById(id);
+  const menu = $('sideMenu');
+  const menuBackdrop = $('menuBackdrop');
+  const menuToggle = $('menuToggle');
+  const nutrition = $('nutritionDrawer');
+  const nutritionBackdrop = $('drawerBackdrop');
+  const notebook = $('notebookModal');
+  const productModal = $('modal');
+  const teaPage = $('teaPage');
+  const main = document.querySelector('main');
+  const footer = document.querySelector('footer.footer');
+
+  if (!menu || !menuBackdrop || !menuToggle) return;
+
+  const setOpen = (panel, backdrop, isOpen, bodyClass, trigger) => {
+    if (!panel || !backdrop) return;
+    panel.classList.toggle('open', isOpen);
+    backdrop.classList.toggle('show', isOpen);
+    panel.setAttribute('aria-hidden', String(!isOpen));
+    backdrop.setAttribute('aria-hidden', String(!isOpen));
+    document.body.classList.toggle(bodyClass, isOpen);
+    if (trigger) trigger.setAttribute('aria-expanded', String(isOpen));
+  };
+
+  function closeMenu() { setOpen(menu, menuBackdrop, false, 'menu-open', menuToggle); }
+  function openMenu() {
+    closeDrawer();
+    setOpen(menu, menuBackdrop, true, 'menu-open', menuToggle);
+    $('menuClose')?.focus();
+  }
+  function closeDrawer() { setOpen(nutrition, nutritionBackdrop, false, 'drawer-open'); }
+  function openDrawer() {
+    closeMenu();
+    setOpen(nutrition, nutritionBackdrop, true, 'drawer-open');
+    $('drawerClose')?.focus();
+    document.dispatchEvent(new CustomEvent('foodlab:drawer-open'));
+  }
+  function openNotes() {
+    closeMenu();
+    if (!notebook) return;
+    notebook.classList.add('show');
+    window.setTimeout(() => $('freeNotes')?.focus(), 40);
+  }
+  function openTea() {
+    closeMenu(); closeDrawer();
+    if (!teaPage) return;
+    if (main) main.hidden = true;
+    if (footer) footer.hidden = true;
+    teaPage.hidden = false;
+    window.scrollTo({ top: 0, behavior: 'instant' });
+    // Rebuild localized category labels after any RU/DE switch.
+    document.dispatchEvent(new CustomEvent('foodlab:tea-open'));
+  }
+  function closeTea() {
+    if (!teaPage) return;
+    teaPage.hidden = true;
+    if (main) main.hidden = false;
+    if (footer) footer.hidden = false;
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+  }
+  function closeOverlays() {
+    closeMenu(); closeDrawer();
+    notebook?.classList.remove('show');
+    productModal?.classList.remove('show');
+    if (teaPage && !teaPage.hidden) closeTea();
+  }
+
+  menuToggle.addEventListener('click', (event) => {
+    event.preventDefault();
+    if (menu.classList.contains('open')) closeMenu();
+    else openMenu();
+  });
+
+  // Delegation makes taps on nested icons, labels and text behave identically.
+  document.addEventListener('click', (event) => {
+    const target = event.target instanceof Element ? event.target : null;
+    if (!target) return;
+    if (target.closest('#menuClose') || target === menuBackdrop) {
+      event.preventDefault(); closeMenu(); return;
+    }
+    if (target.closest('#openNutrition')) {
+      event.preventDefault(); openDrawer(); return;
+    }
+    if (target.closest('#drawerClose') || target === nutritionBackdrop) {
+      event.preventDefault(); closeDrawer(); return;
+    }
+    if (target.closest('#openNotes')) {
+      event.preventDefault(); openNotes(); return;
+    }
+    if (target.closest('#openTea')) {
+      event.preventDefault(); openTea(); return;
+    }
+    if (target.closest('#teaBack')) {
+      event.preventDefault(); closeTea(); return;
+    }
+    if (target.closest('#sideMenu a[data-menu-close]')) closeMenu();
+    if (target.closest('#closeNotebook')) notebook?.classList.remove('show');
+    if (target.closest('#closeModal')) productModal?.classList.remove('show');
+  });
+
+  document.addEventListener('keydown', (event) => {
+    if (event.key === 'Escape') closeOverlays();
+  });
+
+  // Ensure controls remain operable if a pointer tap lands on an icon inside them.
+  document.querySelectorAll('button, a, [role="button"]').forEach((el) => {
+    if (!el.hasAttribute('tabindex') && el.getAttribute('role') === 'button') el.tabIndex = 0;
+  });
 })();
