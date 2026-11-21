@@ -293,3 +293,66 @@ h1,h2,h3,.product h3,.tea-hero h1,.kicker,.eyebrow{font-family:"Caveat","Comic S
 .drawer-head{position:relative}
 .journal-doodle{position:absolute;right:42px;top:0;width:66px;fill:none;stroke:var(--green);stroke-width:2;stroke-linecap:round;stroke-linejoin:round;opacity:.55}
 @media(max-width:560px){.tea-illustration{width:68px;right:15px;top:17px}.tea-hero h1,.tea-hero p{position:relative;z-index:1}.journal-doodle{right:38px;width:44px;opacity:.3}}
+
+
+/* Typography, spacing, illustration and paper-shadow refinement */
+:root{--shadow:2px 3px 8px #735b4614;--paper-shadow:2px 3px 7px #735b4614}
+html,body{max-width:100%;overflow-x:clip}
+body{font-family:"Nunito Sans",Inter,system-ui,sans-serif;font-synthesis:none}
+h1,h2,h3,.diary-day-head h4{font-family:"Caveat",cursive;font-weight:600;letter-spacing:0}
+.hero{padding:42px 44px 44px;gap:30px;border-width:1.5px;box-shadow:3px 5px 14px #735b4618}
+.hero>div:first-child{min-width:0;padding:8px 12px 8px 0}
+.hero h1{font-family:"Caveat",cursive;font-size:clamp(62px,6.4vw,84px);font-weight:600;line-height:1.08;letter-spacing:.015em;margin:14px 0 20px}
+.hero h1 em{color:var(--green);font-weight:600;font-style:normal;letter-spacing:.02em}
+.hero .eyebrow{font-family:"Nunito Sans",Inter,system-ui,sans-serif;font-size:12px;line-height:1.5;letter-spacing:.12em;font-weight:700}
+.hero .lead{font-family:"Nunito Sans",Inter,system-ui,sans-serif;font-size:16px;line-height:1.65;font-weight:400;letter-spacing:0}
+.hero-art{display:grid;place-items:center;min-width:0;min-height:0;height:auto;background:transparent;border:0;border-radius:0;box-shadow:none;overflow:visible}
+.hero-illustration{display:block;width:100%;max-width:460px;height:auto;margin:0;fill:none;stroke:var(--ink);stroke-width:3;stroke-linecap:round;stroke-linejoin:round;filter:none;transform:none}
+.hero:after{box-shadow:2px 3px 5px #735b4618}
+.section-head h2,.callout h2,.product h3,.tea-hero h1,.nutrition-drawer h2,.nutrition-drawer h3,.diary-day-head h4{font-family:"Caveat",cursive;font-weight:600;letter-spacing:0}
+.section-head h2,.callout h2{line-height:1.08}
+.product h3{font-size:28px;line-height:1.08;letter-spacing:0;margin:14px 0 5px}
+.tea-hero h1{letter-spacing:0;line-height:1.08}
+.nutrition-drawer h2,.nutrition-drawer h3{letter-spacing:0;line-height:1.1}
+.btn,.chip,.category,.lang,.mobile-journal-nav button,.mobile-journal-nav a{font-family:"Nunito Sans",Inter,system-ui,sans-serif;font-weight:650;letter-spacing:0;font-synthesis:none}
+.btn{box-shadow:0 2px 4px #735b4617;border-width:1px;line-height:1.35;white-space:normal;text-align:center;transition:transform .16s ease,filter .16s ease,border-color .16s ease}
+.btn:hover{box-shadow:0 3px 6px #735b461c}
+.btn.ghost{font-weight:600}
+.chip,.category,.lang{font-weight:600}
+.catalog-tools input,.catalog-tools select,.search,.tea-controls input,.tea-controls select,.field input,.field select,.free-notes{box-shadow:none}
+.catalog-tools input,.catalog-tools select,.tea-controls input,.tea-controls select{font-family:"Nunito Sans",Inter,system-ui,sans-serif;font-weight:500;letter-spacing:0}
+.product{border-width:1px;box-shadow:1px 2px 3px #735b4617,2px 4px 8px #735b460c;transition:transform .16s ease,border-color .16s ease}
+.product:hover,.product:focus-visible{box-shadow:1px 2px 3px #735b4617,2px 4px 8px #735b460c}
+.home-highlights li,.introline,.callout,.info-card{box-shadow:1px 2px 6px #735b4612}
+.tea-hero{box-shadow:2px 4px 10px #392b2217}
+.tea-card{box-shadow:1px 2px 3px #735b4617,2px 4px 8px #735b460c}
+.nutrition-fab{box-shadow:0 2px 5px #735b4624}
+.nutrition-drawer{box-shadow:-4px 0 14px #735b461a}
+:focus-visible{outline:3px solid #9ab27a!important;outline-offset:3px}
+@media(max-width:840px){
+ .hero{grid-template-columns:1fr;gap:16px;padding:34px 32px}
+ .hero>div:first-child{padding:0}
+ .hero-art{min-height:0}
+ .hero-illustration{width:min(100%,430px);max-height:310px}
+ .hero h1{font-size:clamp(58px,9vw,78px)}
+}
+@media(max-width:560px){
+ .hero{padding:28px 22px 24px;gap:8px;margin-top:10px}
+ .hero h1{font-size:clamp(54px,14vw,68px);line-height:1.08;margin:10px 0 14px}
+ .hero .eyebrow{font-size:11px;letter-spacing:.09em}
+ .hero .lead{font-size:15px;line-height:1.55}
+ .hero-art{margin-top:4px}
+ .hero-illustration{width:min(100%,370px);max-height:250px}
+ .actions{display:flex;flex-wrap:wrap;gap:8px}
+ .actions .btn{min-width:0;max-width:100%;font-size:13px;padding:10px 12px}
+ .section-head h2{font-size:clamp(35px,10vw,44px)}
+ .product h3{font-size:25px}
+}
+@media(max-width:380px){
+ .hero{padding:24px 18px 20px}
+ .hero h1{font-size:52px}
+ .hero-art{margin-inline:-3px}
+ .hero-illustration{max-height:225px}
+ .actions .btn{font-size:12px;padding:10px}
+}
+@media(prefers-reduced-motion:reduce){.btn,.product{transition:none}}
