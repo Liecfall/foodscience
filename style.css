@@ -356,3 +356,24 @@ h1,h2,h3,.diary-day-head h4{font-family:"Caveat",cursive;font-weight:600;letter-
  .actions .btn{font-size:12px;padding:10px}
 }
 @media(prefers-reduced-motion:reduce){.btn,.product{transition:none}}
+
+/* Saved products */
+.favorite-filter{display:inline-flex;align-items:center;gap:7px}
+.favorite-filter svg{width:16px;height:16px;stroke:currentColor;stroke-width:1.7;stroke-linecap:round;stroke-linejoin:round}
+.favorite-filter.active svg{color:var(--rust)}
+.favorites-count{display:inline-grid;place-items:center;min-width:20px;height:20px;padding:0 5px;border-radius:99px;background:#eaded0;color:var(--ink);font-size:11px;line-height:1}
+.favorites-status{flex-basis:100%;font-size:12px;color:var(--rust)}
+.prod-actions{display:flex;align-items:center;gap:7px;max-width:calc(100% - 60px)}
+.product .tag{max-width:170px;white-space:normal}
+.favorite-btn{display:inline-grid;place-items:center;flex:0 0 42px;width:42px;height:42px;padding:0;border:1px solid transparent;border-radius:50%;background:transparent;color:#49382e;cursor:pointer;transition:color .16s ease,background-color .16s ease,border-color .16s ease}
+.favorite-btn svg{width:22px;height:22px;stroke:currentColor;stroke-width:1.65;stroke-linecap:round;stroke-linejoin:round}
+.favorite-btn[aria-pressed="true"]{color:#b45f49;background:#f8e6dd;border-color:#e8c4b7}
+.favorite-btn:hover{background:#f2e8dc;border-color:#d8c4ad}
+.favorite-btn:focus-visible,.favorite-filter:focus-visible{outline:3px solid #93ae70;outline-offset:2px}
+.modal-title-row{display:flex;align-items:center;justify-content:space-between;gap:12px}
+.modal-title-row .modal-title{margin:8px 0}
+.modal-favorite{flex:0 0 46px;width:46px;height:46px;border-color:var(--line);background:var(--paper)}
+.open-label{display:block;padding:0;border:0;background:transparent;text-align:left;font:inherit;cursor:pointer}
+.open-label:focus-visible{outline:2px solid #93ae70;outline-offset:3px;border-radius:3px}
+@media(max-width:560px){.favorite-btn{width:44px;height:44px;flex-basis:44px}.prod-actions{gap:4px}.product .tag{max-width:128px}.modal-title-row .modal-title{font-size:25px}}
+@media(prefers-reduced-motion:reduce){.favorite-btn{transition:none}}
