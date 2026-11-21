@@ -72,9 +72,15 @@ function commitFavorites(next){
  try{localStorage.setItem(FAVORITES_KEY,JSON.stringify({version:1,items:next}));favoriteItems=next;setFavoritesStatus();return true}
  catch{setFavoritesStatus("favoriteStorageError");return false}
 }
+function normalizeFavoriteEntry(entry){
+ if(entry?.source==="off")return entry.product?validStoredOff(entry):validStoredOff({source:"off",barcode:String(entry.barcode||""),product:entry});
+ if(typeof entry?.id==="string"&&data.some(f=>f.id===entry.id))return {source:"catalog",id:entry.id};
+ return null;
+}
 function toggleFavoriteEntry(entry,focusIndex=0){
- const key=favoriteKey(entry),present=favoriteItems.some(x=>favoriteKey(x)===key),modalWasOpen=$("#modal").classList.contains("show");
- const next=present?favoriteItems.filter(x=>favoriteKey(x)!==key):[...favoriteItems,entry];
+ const record=normalizeFavoriteEntry(entry);if(!record){setFavoritesStatus("favoriteIdError");return false}
+ const key=favoriteKey(record),present=favoriteItems.some(x=>favoriteKey(x)===key),modalWasOpen=$("#modal").classList.contains("show");
+ const next=present?favoriteItems.filter(x=>favoriteKey(x)!==key):[...favoriteItems,record];
  if(!commitFavorites(next))return false;
  render();
  if(modalWasOpen&&openProductKey){openProduct(openProductKey);$("#modalContent").querySelector(".modal-favorite")?.focus();return true}
