@@ -212,3 +212,81 @@ img,svg,video{max-width:100%;height:auto}
 @media(max-width:620px){.home-highlights{grid-template-columns:1fr;gap:8px}.home-highlights li{padding:10px 13px}}
 @media(max-width:380px){.diary-item-values small{white-space:normal;max-width:150px}}
 header{position:fixed;top:0;left:0;right:0;width:100%;z-index:70;padding-top:env(safe-area-inset-top,0px)}
+
+
+/* Warm hand-drawn food journal theme */
+:root{--bg:#F6F0E6;--paper:#FFFCF6;--ink:#392B22;--muted:#76685A;--green:#426B4F;--green2:#4F9861;--sage:#E8EBDD;--lime:#D9E5B8;--line:#D9C7A7;--rust:#E8873B;--journal-blue:#5C9DB5;--shadow:3px 5px 0 #735b4612,0 16px 36px #392b2210;--outline:#735B46}
+html{scroll-padding-top:88px}
+body{background-color:var(--bg);color:var(--ink);font-family:"Nunito Sans",Inter,system-ui,sans-serif;background-image:radial-gradient(#735b4609 .7px,transparent .7px);background-size:9px 9px}
+header{background:#F6F0E6f2;border-bottom:2px solid var(--outline);box-shadow:0 3px 0 #735b4610}
+.mark{background:var(--green);color:#f5e8c6}
+h1,h2,h3,.product h3,.tea-hero h1,.kicker,.eyebrow{font-family:"Caveat","Comic Sans MS",cursive}
+.hero{background:var(--paper);border:2px solid var(--outline);border-radius:30px 22px 34px 24px;box-shadow:8px 9px 0 #d9c7a766;position:relative}
+.hero:after{content:"";position:absolute;right:7%;top:-10px;width:90px;height:24px;background:#e6bd4db8;transform:rotate(3deg);clip-path:polygon(4% 0,100% 8%,95% 100%,0 88%)}
+.hero h1{font-size:clamp(56px,8vw,90px);line-height:.9}
+.hero h1 em{color:var(--green);font-weight:700}
+.eyebrow,.kicker{color:var(--green);letter-spacing:.08em;font-size:20px}
+.hero-art{background:#EADCC6;border:2px solid var(--outline);border-radius:22px 30px 24px 28px;box-shadow:inset 0 0 0 6px #fffcf677}
+.hero-illustration{display:block;width:min(220px,65%);margin:18px auto;fill:none;stroke:var(--green);stroke-width:3.5;stroke-linecap:round;stroke-linejoin:round;filter:drop-shadow(3px 4px 0 #426b4f20)}
+.art-caption,.art-foot,.tea-kicker{font-family:"Caveat",cursive;letter-spacing:.1em;font-size:17px}
+.btn,.chip,.lang,.menu-toggle,.search,select,input,textarea{border-color:var(--outline)}
+.btn{border-radius:14px 12px 15px 11px;box-shadow:2px 3px 0 #735b4624}
+.btn:not(.ghost){background:var(--green);color:#fffdf7}
+.btn:hover{transform:translateY(-2px)}
+.section-head h2,.callout h2{font-size:clamp(36px,5vw,54px);line-height:1}
+.catalog-tools input,.catalog-tools select{background:var(--paper);border:1.5px solid #bba58a;border-radius:14px}
+.chip{background:var(--paper);border-radius:99px}
+.chip.active{background:var(--green);border-color:var(--green);color:#fff}
+.product{--tilt:0deg;background:var(--paper);border:1.5px solid var(--outline);border-radius:13px 20px 12px 18px;box-shadow:4px 5px 0 #d9c7a766,0 12px 24px #392b220a;transform:rotate(var(--tilt));position:relative;overflow:hidden}
+.product:nth-child(4n+1){--tilt:-.45deg}.product:nth-child(4n+3){--tilt:.4deg}
+.product:hover,.product:focus-visible{transform:rotate(0deg) translateY(-4px);border-color:var(--green);box-shadow:5px 8px 0 #d9c7a766,0 18px 30px #392b2218}
+.product h3{font-size:29px;color:var(--ink)}
+.product .tag{background:#e8ebdc;color:#34543d;border:1px dashed #829276}
+.product .emoji{display:grid;place-items:center;width:54px;height:54px;border:1.5px dashed var(--outline);border-radius:48% 52% 45% 55%;background:#f5ebd9}
+.macros{gap:7px}
+.macro{border-radius:10px;background:#f7efe3;position:relative;overflow:hidden}
+.macro:nth-child(1){background:linear-gradient(90deg,#4f986122 0 8px,#f7efe3 8px)}
+.macro:nth-child(2){background:linear-gradient(90deg,#e6bd4d55 0 8px,#f7efe3 8px)}
+.macro:nth-child(3){background:linear-gradient(90deg,#5c9db533 0 8px,#f7efe3 8px)}
+.macro:nth-child(4){background:linear-gradient(90deg,#e8873b55 0 8px,#f7efe3 8px)}
+.macro strong{color:var(--ink)}
+.info-card,.callout,.introline,.home-highlights li{background:var(--paper);border:1.5px solid var(--outline);border-radius:16px 20px 14px 18px;box-shadow:3px 4px 0 #d9c7a755}
+.home-highlights li span{background:#e8ebdc;color:var(--green)}
+.callout{border-radius:23px 16px 25px 17px}
+.tea-page{background:var(--bg);font-family:"Nunito Sans",sans-serif}
+.tea-hero{background:linear-gradient(135deg,#45362f,#80614c);border:2px solid #392b22;border-radius:26px 20px 30px 22px;box-shadow:7px 8px 0 #d9c7a7}
+.tea-hero h1{font-size:clamp(48px,7vw,74px)}
+.tea-controls input,.tea-controls select,.tea-card{border:1.5px solid var(--outline)!important;background:var(--paper)!important;border-radius:14px!important}
+.tea-card{box-shadow:4px 5px 0 #d9c7a766}
+.tea-card h2,.tea-card h3{font-family:"Caveat",cursive}
+.footer{border-top:2px dashed #bba58a}
+.nutrition-fab{background:var(--rust);border:2px solid var(--ink);box-shadow:3px 4px 0 #735b4655}
+.nutrition-drawer{background:#fbf6eb;border-left:2px solid var(--outline)}
+.nutrition-drawer h2,.nutrition-drawer h3{font-family:"Caveat",cursive;font-size:34px}
+.nutrition-drawer input,.nutrition-drawer select,.nutrition-drawer textarea{background:var(--paper);border-color:#bba58a;border-radius:11px}
+.result-card,.diary-totals,.diary-item{background:var(--paper);border:1px solid #bba58a;border-radius:12px}
+.diary-day{border-top:2px dashed #bba58a}
+.diary-day-head h4{font-family:"Caveat",cursive;font-size:24px}
+::selection{background:#d9e5b8;color:var(--ink)}
+.mobile-journal-nav{display:none}
+@media(max-width:700px){
+ body{padding-bottom:calc(76px + env(safe-area-inset-bottom,0px))}
+ .wrap{width:min(100% - 28px,1160px)}
+ .hero{padding:24px 18px;margin-top:10px}
+ .hero:after{width:62px;height:18px;right:12%}
+ .hero-art{min-height:200px}
+ .hero-illustration{width:145px;margin:4px auto}
+ .products{grid-template-columns:repeat(2,minmax(0,1fr));gap:11px}
+ .product{padding:14px 12px;border-radius:12px 16px 11px 15px}
+ .product:nth-child(n){--tilt:0deg}
+ .product h3{font-size:25px}
+ .desc{min-height:0}
+ .mobile-journal-nav{position:fixed;z-index:69;left:10px;right:10px;bottom:calc(8px + env(safe-area-inset-bottom,0px));display:grid;grid-template-columns:repeat(4,1fr);padding:7px 5px;background:#fffcf6f2;border:1.5px solid var(--outline);border-radius:18px;box-shadow:0 5px 20px #392b2230;backdrop-filter:blur(14px)}
+ .mobile-journal-nav a,.mobile-journal-nav button{display:flex;flex-direction:column;align-items:center;justify-content:center;gap:1px;min-height:48px;border:0;background:none;color:var(--ink);font:inherit}
+ .mobile-journal-nav span{font-size:20px;line-height:1.1;color:var(--green)}
+ .mobile-journal-nav small{font-size:10px;font-weight:800;line-height:1.2}
+ .nutrition-fab{right:14px;bottom:calc(88px + env(safe-area-inset-bottom,0px));width:48px;height:48px;font-size:22px}
+ .tea-page{padding-bottom:100px}
+}
+@media(max-width:390px){.products{grid-template-columns:1fr}.mobile-journal-nav{left:7px;right:7px}}
+@media(prefers-reduced-motion:reduce){html{scroll-behavior:auto}*,*:before,*:after{animation-duration:.01ms!important;animation-iteration-count:1!important;transition-duration:.01ms!important}}
