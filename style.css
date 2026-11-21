@@ -377,3 +377,13 @@ h1,h2,h3,.diary-day-head h4{font-family:"Caveat",cursive;font-weight:600;letter-
 .open-label:focus-visible{outline:2px solid #93ae70;outline-offset:3px;border-radius:3px}
 @media(max-width:560px){.favorite-btn{width:44px;height:44px;flex-basis:44px}.prod-actions{gap:4px}.product .tag{max-width:128px}.modal-title-row .modal-title{font-size:25px}}
 @media(prefers-reduced-motion:reduce){.favorite-btn{transition:none}}
+
+/* Keep the label guide readable on its light paper card. */
+#label .callout{background:var(--paper);color:var(--ink);border:1.5px solid #765943;box-shadow:3px 4px 0 #d9c7a755}
+#label .callout .kicker{color:var(--green)}
+#label .callout h2{color:var(--ink)}
+#label .callout p{color:#554b3f}
+#label .label-step{background:#f7efe3;border:1px solid #c8b49a}
+#label .label-step b{color:var(--green)}
+#label .label-step strong{color:var(--ink)}
+#label .label-step span{color:#554b3f;font-size:13px;line-height:1.5}
