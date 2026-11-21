@@ -130,7 +130,7 @@ input,select,textarea{font:inherit;max-width:100%}
 
 
 /* FoodLab 1.5.1 — robust mobile menu interaction */
-header{position:sticky;top:0;z-index:70}
+header{position:fixed;top:0;left:0;right:0;width:100%;z-index:70;padding-top:env(safe-area-inset-top,0px)}
 .menu-toggle{position:relative;z-index:71;pointer-events:auto;touch-action:manipulation;-webkit-tap-highlight-color:transparent}
 .menu-backdrop{z-index:80;pointer-events:none}
 .menu-backdrop.show{pointer-events:auto}
@@ -184,3 +184,31 @@ img,svg,video{max-width:100%;height:auto}
 @media(max-width:560px){.drawer-notebook .free-notes{min-height:140px}.catalog-tools #offSearchBtn{width:100%}}
 
 .diary-totals{padding:10px 12px;margin:0 0 10px;border-radius:10px;background:#e1e9dc;color:#183c30;font-size:13px;font-weight:800;line-height:1.5}
+
+/* Mobile product cards */
+@media(max-width:560px){
+ .products{grid-template-columns:minmax(0,1fr);gap:12px}
+ .product{padding:16px;border-radius:8px 20px 8px 8px}
+ .product h3{font-size:20px;margin:12px 0 5px}
+ .desc{min-height:0;margin:10px 0 12px}
+ .macros{grid-template-columns:repeat(2,minmax(0,1fr));gap:9px 14px}
+ .macro strong{font-size:15px}.macro span{font-size:11px}
+ .product .tag{max-width:62%;white-space:normal;text-align:right;line-height:1.3}
+}
+/* Home page feature summary */
+.home-highlights{list-style:none;display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:12px;padding:0;margin:6px 0 24px}
+.home-highlights li{display:flex;align-items:center;gap:10px;padding:13px 16px;border:1px solid var(--line);border-radius:14px;background:var(--paper);color:var(--green);font-size:13px}
+.home-highlights li span{display:grid;place-items:center;width:30px;height:30px;flex:0 0 30px;border-radius:50%;background:var(--sage);font-size:17px}
+.diary-totals{display:flex;flex-direction:column;gap:3px}
+.diary-day{padding:0;margin:10px 0 0;border-top:1px solid var(--line)}
+.diary-day-head{display:grid;grid-template-columns:1fr auto;align-items:center;gap:4px 12px;padding:10px 2px}
+.diary-day-head h4{margin:0;font-size:14px;text-transform:capitalize}
+.diary-day-head>small{grid-column:1/-1;color:var(--muted);font-size:11px}
+.diary-day-items{display:grid;gap:7px}
+.diary-item{gap:10px;padding:11px 12px}
+.diary-item>div:first-child{min-width:0}.diary-item small{display:block}
+.diary-item-values{text-align:right;flex:0 0 auto}
+.diary-item-values small{font-size:10px;color:var(--muted);white-space:nowrap}
+@media(max-width:620px){.home-highlights{grid-template-columns:1fr;gap:8px}.home-highlights li{padding:10px 13px}}
+@media(max-width:380px){.diary-item-values small{white-space:normal;max-width:150px}}
+header{position:fixed;top:0;left:0;right:0;width:100%;z-index:70;padding-top:env(safe-area-inset-top,0px)}
