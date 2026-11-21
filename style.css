@@ -314,10 +314,10 @@ h1,h2,h3,.diary-day-head h4{font-family:"Caveat",cursive;font-weight:600;letter-
 .product h3{font-size:28px;line-height:1.08;letter-spacing:0;margin:14px 0 5px}
 .tea-hero h1{letter-spacing:0;line-height:1.08}
 .nutrition-drawer h2,.nutrition-drawer h3{letter-spacing:0;line-height:1.1}
-.btn,.chip,.category,.lang,.mobile-journal-nav button,.mobile-journal-nav a{font-family:"Nunito Sans",Inter,system-ui,sans-serif;font-weight:650;letter-spacing:0;font-synthesis:none}
+.btn,.chip,.category,.lang,.mobile-journal-nav button,.mobile-journal-nav a{font-family:"Nunito Sans",Inter,system-ui,sans-serif;font-weight:600;letter-spacing:0;font-synthesis:none}
 .btn{box-shadow:0 2px 4px #735b4617;border-width:1px;line-height:1.35;white-space:normal;text-align:center;transition:transform .16s ease,filter .16s ease,border-color .16s ease}
 .btn:hover{box-shadow:0 3px 6px #735b461c}
-.btn.ghost{font-weight:600}
+.btn.ghost{font-weight:600}.btn:not(.ghost),.actions .btn{font-weight:600}
 .chip,.category,.lang{font-weight:600}
 .catalog-tools input,.catalog-tools select,.search,.tea-controls input,.tea-controls select,.field input,.field select,.free-notes{box-shadow:none}
 .catalog-tools input,.catalog-tools select,.tea-controls input,.tea-controls select{font-family:"Nunito Sans",Inter,system-ui,sans-serif;font-weight:500;letter-spacing:0}
