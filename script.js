@@ -140,6 +140,7 @@ setLang(lang);
   page.hidden=true;document.querySelector('main').hidden=false;
   document.querySelector('footer.footer').hidden=false;window.scrollTo({top:0,behavior:'smooth'});
  }
+ document.addEventListener('foodlab:tea-open',()=>{initCategories();render();});
  search.addEventListener('input',render);category.addEventListener('change',render);
  const oldSetLang=window.setLang;
  // The site's language switch updates documentElement.lang; refresh the tea interface on return/open.
