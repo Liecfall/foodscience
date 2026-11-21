@@ -33,7 +33,7 @@ function readFavorites(){
   const seen=new Set(),items=[];
   for(const item of saved.items){
    let clean=null,key="";
-   if(item?.source==="catalog"&&typeof item.id==="string"&&item.id.trim()){clean={source:"catalog",id:item.id.trim()};key="catalog:"+clean.id}
+   if(item?.source==="catalog"&&typeof item.id==="string"&&item.id.trim()&&data.some(f=>f.id===item.id.trim())){clean={source:"catalog",id:item.id.trim()};key="catalog:"+clean.id}
    else {clean=validStoredOff(item);if(clean)key="off:"+clean.barcode}
    if(clean&&!seen.has(key)){seen.add(key);items.push(clean)}
   }
