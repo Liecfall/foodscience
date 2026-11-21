@@ -290,3 +290,10 @@ h1,h2,h3,.product h3,.tea-hero h1,.kicker,.eyebrow{font-family:"Caveat","Comic S
 }
 @media(max-width:390px){.products{grid-template-columns:1fr}.mobile-journal-nav{left:7px;right:7px}}
 @media(prefers-reduced-motion:reduce){html{scroll-behavior:auto}*,*:before,*:after{animation-duration:.01ms!important;animation-iteration-count:1!important;transition-duration:.01ms!important}}
+
+.tea-hero{position:relative;overflow:hidden}
+.tea-illustration{position:absolute;right:32px;top:25px;width:100px;fill:none;stroke:#efd9b7;stroke-width:2.4;stroke-linecap:round;stroke-linejoin:round;opacity:.8}
+.tea-hero p{max-width:690px}
+.drawer-head{position:relative}
+.journal-doodle{position:absolute;right:42px;top:0;width:66px;fill:none;stroke:var(--green);stroke-width:2;stroke-linecap:round;stroke-linejoin:round;opacity:.55}
+@media(max-width:560px){.tea-illustration{width:68px;right:15px;top:17px}.tea-hero h1,.tea-hero p{position:relative;z-index:1}.journal-doodle{right:38px;width:44px;opacity:.3}}
