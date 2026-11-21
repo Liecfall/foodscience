@@ -57,7 +57,7 @@ function favoriteButton(f,extra=""){
 }
 function updateFavoritesToggle(){
  const button=$("#favoritesToggle");if(!button)return;
- const total=favoriteProducts().length;
+ const total=favoriteItems.length;
  button.classList.toggle("active",favoritesOnly);button.setAttribute("aria-pressed",String(favoritesOnly));
  button.innerHTML=heartSvg(favoritesOnly)+'<span>'+esc(t("favorites"))+'</span><span class="favorites-count" id="favoritesCount">'+total+'</span>';
 }
