@@ -35,12 +35,12 @@ Commit `supabase-config.js` with only the public URL and publishable key. GitHub
 
 ## Data model and sync behavior
 - Diary entries are stored individually by `user_id + entry_id`; the original diary object is retained in JSONB.
-- Favorites preserve catalog IDs or Open Food Facts barcode + product snapshot.
+- Favorites preserve FoodLab catalog product IDs only.
 - Notes and diary goal are stored as one row per user.
 - Guest data remains under the original LocalStorage keys. Account data uses a user-specific local cache namespace.
 - Import is explicit, uses insert-if-absent semantics, and leaves guest originals in place.
 - Cloud sync is online-only in this first version. A failed request is reported as a sync error; it is not described as cloud-saved.
-- Deletions are represented by `deleted_at` markers so other devices do not restore removed rows.
+- Synchronization is additive and non-destructive: it never deletes cloud rows or overwrites existing rows with stale device copies. Cloud copies win ID conflicts. Deletion propagation and conflict-aware edits need a future versioned/tombstone model; until then, deleting an entry or favorite on one device may not remove it from other devices.
 
 ## Manual verification checklist
 1. Register a new email and confirm it using the email link.
@@ -59,3 +59,8 @@ Commit `supabase-config.js` with only the public URL and publishable key. GitHub
 - End-to-end verification of real email delivery, RLS isolation, and two-device synchronization requires the configured Supabase project and test accounts.
 - Account deletion is not implemented in the browser: deleting an Auth user requires a protected server-side operation (for example, an Edge Function using a server-only secret). Never add that secret to the client.
 - Before public launch, publish a privacy notice explaining email/account data, diary, favorites, notes, data region, export, and deletion request process.
+
+
+## Safe synchronization policy
+
+The client inserts only missing diary entries and catalog favorites. Existing cloud rows win ID conflicts. Stale devices cannot delete cloud rows or overwrite them. Edits to existing records and deletions are not yet synchronized across devices; export important data regularly until versioned conflict handling is implemented.
