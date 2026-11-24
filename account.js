@@ -147,92 +147,57 @@
     $("cancelImport").addEventListener("click", showAccount);
   }
   async function importGuest() {
-    const g = guestSnapshot(), id = user.id, msg = $("importStatus");
-    $("confirmImport").disabled = true;
-    try {
-      if (g.diary.length) {
-        const rows = g.diary.filter(x => x && x.id).map(x => ({ user_id:id, entry_id:String(x.id), data:x }));
-        if (rows.length) { const { error } = await client.from("diary_entries").upsert(rows, { onConflict:"user_id,entry_id", ignoreDuplicates:true }); if (error) throw error; }
-      }
-      if (g.favorites.length) {
-        const rows = g.favorites.map(x => {
-          if (x?.source === "catalog" && x.id) return {user_id:id,favorite_key:"catalog:"+x.id,source:"catalog",catalog_product_id:String(x.id)};
-          if (x?.source === "off" && x.barcode && x.product) return {user_id:id,favorite_key:"off:"+x.barcode,source:"off",barcode:String(x.barcode),product_snapshot:x.product};
-          return null;
-        }).filter(Boolean);
-        if (rows.length) { const { error } = await client.from("favorites").upsert(rows, { onConflict:"user_id,favorite_key", ignoreDuplicates:true }); if (error) throw error; }
-      }
-      const { data: note } = await client.from("user_notes").select("user_id").eq("user_id",id).maybeSingle();
-      if (!note && g.notes) { const { error } = await client.from("user_notes").insert({user_id:id,content:g.notes}); if (error) throw error; }
-      const { data: settings } = await client.from("user_settings").select("user_id").eq("user_id",id).maybeSingle();
-      if (!settings && g.settings && Object.prototype.hasOwnProperty.call(g.settings,"goal")) { const { error } = await client.from("user_settings").insert({user_id:id,goal:g.settings.goal}); if (error) throw error; }
-      await loadCloud();
-      localStorage.setItem("foodlab-import-prompted:"+id,"1");
-      showAccount();
-      status(tr("Перенос завершён. Локальные данные сохранены.","Import abgeschlossen. Lokale Daten bleiben erhalten."), "success");
-    } catch (err) {
-      msg.textContent = tr("Перенос выполнен не полностью. Можно безопасно повторить: уже существующие записи не будут заменены. ","Der Import wurde nicht vollständig abgeschlossen. Du kannst ihn sicher wiederholen. ") + friendlyError(err);
-      $("confirmImport").disabled = false;
-    }
+    const g=guestSnapshot(),id=user.id,msg=$("importStatus");$("confirmImport").disabled=true;
+    try{
+      const dr=g.diary.map(x=>{if(!x||typeof x.id!=="string"||!x.id.trim())throw new Error("Некорректная запись гостевого дневника.");return {user_id:id,entry_id:x.id,data:x}});
+      if(dr.length){const {error}=await client.from("diary_entries").upsert(dr,{onConflict:"user_id,entry_id",ignoreDuplicates:true});if(error)throw error;}
+      const fr=g.favorites.filter(x=>x?.source==="catalog"&&typeof x.id==="string"&&x.id.trim()).map(x=>({user_id:id,favorite_key:"catalog:"+x.id,source:"catalog",catalog_product_id:x.id}));
+      if(fr.length){const {error}=await client.from("favorites").upsert(fr,{onConflict:"user_id,favorite_key",ignoreDuplicates:true});if(error)throw error;}
+      const nr=await client.from("user_notes").select("user_id").eq("user_id",id).maybeSingle();if(nr.error)throw nr.error;if(!nr.data&&g.notes){const {error}=await client.from("user_notes").insert({user_id:id,content:g.notes});if(error)throw error;}
+      const sr=await client.from("user_settings").select("user_id").eq("user_id",id).maybeSingle();if(sr.error)throw sr.error;if(!sr.data&&Object.prototype.hasOwnProperty.call(g.settings,"goal")){const {error}=await client.from("user_settings").insert({user_id:id,goal:g.settings.goal??null});if(error)throw error;}
+      await loadCloud();localStorage.setItem("foodlab-import-prompted:"+id,"1");showAccount();status(tr("Перенос завершён. Локальные данные сохранены.","Import abgeschlossen. Lokale Daten bleiben erhalten."),"success");
+    }catch(err){msg.textContent=tr("Перенос выполнен не полностью. Его можно безопасно повторить. ","Der Import war unvollständig und kann sicher wiederholt werden. ")+friendlyError(err);$("confirmImport").disabled=false;}
   }
-  async function loadCloud() {
-    const id = user.id;
-    const [d,f,n,s] = await Promise.all([
+  function readLocalCollection(key,kind){
+    const raw=localStorage.getItem(scoped(key));if(raw===null)return [];
+    const parsed=JSON.parse(raw),rows=kind==="diary"?(Array.isArray(parsed)?parsed:parsed?.entries):parsed?.items;
+    if(!Array.isArray(rows))throw new Error("Неизвестный формат локальных данных. Синхронизация остановлена.");
+    if(kind==="diary"&&rows.some(x=>!x||typeof x!=="object"||typeof x.id!=="string"||!x.id.trim()))throw new Error("Повреждён дневник. Облачные данные не изменены.");
+    if(kind==="favorites"&&rows.some(x=>x?.source!=="catalog"||typeof x.id!=="string"||!x.id.trim()))throw new Error("Повреждено избранное. Облачные данные не изменены.");
+    return rows;
+  }
+  function mergeById(remoteRows,localRows,idOf){const map=new Map();(remoteRows||[]).forEach(x=>map.set(idOf(x),x));(localRows||[]).forEach(x=>{const id=idOf(x);if(!map.has(id))map.set(id,x)});return [...map.values()];}
+  async function loadCloud(){
+    const id=user.id,[d,f,n,s]=await Promise.all([
       client.from("diary_entries").select("entry_id,data").eq("user_id",id).is("deleted_at",null),
-      client.from("favorites").select("favorite_key,source,catalog_product_id,barcode,product_snapshot").eq("user_id",id).is("deleted_at",null),
+      client.from("favorites").select("favorite_key,catalog_product_id").eq("user_id",id).is("deleted_at",null),
       client.from("user_notes").select("content").eq("user_id",id).maybeSingle(),
       client.from("user_settings").select("goal").eq("user_id",id).maybeSingle()
     ]);
-    for (const x of [d,f,n,s]) if (x.error) throw x.error;
-    localStorage.setItem(scoped(keys.diary),JSON.stringify({version:2,entries:(d.data||[]).map(x=>x.data)}));
-    localStorage.setItem(scoped(keys.favorites),JSON.stringify({version:1,items:(f.data||[]).map(x=>x.source==="catalog"?{source:"catalog",id:x.catalog_product_id}:{source:"off",barcode:x.barcode,product:x.product_snapshot})}));
-    localStorage.setItem(scoped(keys.notes),n.data?.content || "");
-    localStorage.setItem(scoped(keys.settings),JSON.stringify({goal:s.data?.goal ?? null}));
-    window.dispatchEvent(new Event("foodlab:account-data-loaded"));
-    status(tr("Облачные данные загружены","Cloud-Daten geladen"),"success");
+    for(const x of [d,f,n,s])if(x.error)throw x.error;
+    const diary=mergeById((d.data||[]).map(x=>x.data),readLocalCollection(keys.diary,"diary"),x=>String(x.id));
+    const favorites=mergeById((f.data||[]).map(x=>({source:"catalog",id:x.catalog_product_id})),readLocalCollection(keys.favorites,"favorites"),x=>x.id);
+    localStorage.setItem(scoped(keys.diary),JSON.stringify({version:2,entries:diary}));
+    localStorage.setItem(scoped(keys.favorites),JSON.stringify({version:1,items:favorites}));
+    if(n.data)localStorage.setItem(scoped(keys.notes),n.data.content||"");else if(localStorage.getItem(scoped(keys.notes))===null)localStorage.setItem(scoped(keys.notes),"");
+    if(s.data)localStorage.setItem(scoped(keys.settings),JSON.stringify({goal:s.data.goal??null}));else if(localStorage.getItem(scoped(keys.settings))===null)localStorage.setItem(scoped(keys.settings),JSON.stringify({goal:null}));
+    window.dispatchEvent(new Event("foodlab:account-data-loaded"));status(tr("Данные объединены без удаления записей.","Daten wurden ohne Löschen von Einträgen zusammengeführt."),"success");
   }
-  async function syncDiary() {
-    const id=user.id;
-    // Never turn a damaged/missing cache into an empty diary: that could mark all remote rows deleted.
-    const raw = localStorage.getItem(scoped(keys.diary));
-    if (raw === null) throw new Error("Local diary cache is missing; cloud sync skipped to protect remote entries.");
-    const parsed = JSON.parse(raw);
-    const arr = Array.isArray(parsed) ? parsed : parsed?.entries;
-    if (!Array.isArray(arr) || arr.some(x => !x || typeof x !== "object" || typeof x.id !== "string" || !x.id.trim())) {
-      throw new Error("Local diary cache contains invalid entries; cloud sync skipped to protect remote data.");
-    }
-    const rows=arr.map(x=>({user_id:id,entry_id:String(x.id),data:x}));
-    if(rows.length){const {error}=await client.from("diary_entries").upsert(rows,{onConflict:"user_id,entry_id"});if(error)throw error;}
-    const {data:remote,error}=await client.from("diary_entries").select("entry_id").eq("user_id",id).is("deleted_at",null);
-    if(error)throw error;
-    const ids=new Set(arr.map(x=>String(x.id)));
-    const gone=(remote||[]).filter(x=>!ids.has(x.entry_id)).map(x=>x.entry_id);
-    if(gone.length){const {error:e}=await client.from("diary_entries").update({deleted_at:new Date().toISOString()}).eq("user_id",id).in("entry_id",gone);if(e)throw e;}
+  async function syncDiary(){
+    const id=user.id,localRows=readLocalCollection(keys.diary,"diary"),{data:remote,error}=await client.from("diary_entries").select("entry_id").eq("user_id",id).is("deleted_at",null);if(error)throw error;
+    const known=new Set((remote||[]).map(x=>x.entry_id)),missing=localRows.filter(x=>!known.has(String(x.id))).map(x=>({user_id:id,entry_id:String(x.id),data:x}));
+    if(missing.length){const {error:e}=await client.from("diary_entries").upsert(missing,{onConflict:"user_id,entry_id",ignoreDuplicates:true});if(e)throw e;}
   }
-  async function syncFavorites() {
-    const id=user.id;
-    // Never turn a damaged/missing cache into []: that could mark all remote favorites deleted.
-    const raw = localStorage.getItem(scoped(keys.favorites));
-    if (raw === null) throw new Error("Local favorites cache is missing; cloud sync skipped to protect remote favorites.");
-    const parsed = JSON.parse(raw);
-    const items = parsed?.items;
-    if (parsed?.version !== 1 || !Array.isArray(items)) throw new Error("Local favorites cache has an unsupported format; cloud sync skipped.");
-    const rows=items.map(x=>x?.source==="catalog"&&typeof x.id==="string"&&x.id.trim()?{user_id:id,favorite_key:"catalog:"+x.id,source:"catalog",catalog_product_id:x.id,deleted_at:null}:x?.source==="off"&&typeof x.barcode==="string"&&/^[0-9]{8,14}$/.test(x.barcode)&&x.product&&typeof x.product==="object"?{user_id:id,favorite_key:"off:"+x.barcode,source:"off",barcode:x.barcode,product_snapshot:x.product,deleted_at:null}:null);
-    if (rows.some(x => !x)) throw new Error("Local favorites cache contains invalid entries; cloud sync skipped to protect remote data.");
-    if(rows.length){const {error}=await client.from("favorites").upsert(rows,{onConflict:"user_id,favorite_key"});if(error)throw error;}
-    const {data:remote,error}=await client.from("favorites").select("favorite_key").eq("user_id",id).is("deleted_at",null);
-    if(error)throw error;
-    const ids=new Set(rows.map(x=>x.favorite_key)),gone=(remote||[]).filter(x=>!ids.has(x.favorite_key)).map(x=>x.favorite_key);
-    if(gone.length){const {error:e}=await client.from("favorites").update({deleted_at:new Date().toISOString()}).eq("user_id",id).in("favorite_key",gone);if(e)throw e;}
+  async function syncFavorites(){
+    const id=user.id,localRows=readLocalCollection(keys.favorites,"favorites"),{data:remote,error}=await client.from("favorites").select("favorite_key").eq("user_id",id).is("deleted_at",null);if(error)throw error;
+    const known=new Set((remote||[]).map(x=>x.favorite_key)),missing=localRows.filter(x=>!known.has("catalog:"+x.id)).map(x=>({user_id:id,favorite_key:"catalog:"+x.id,source:"catalog",catalog_product_id:x.id}));
+    if(missing.length){const {error:e}=await client.from("favorites").upsert(missing,{onConflict:"user_id,favorite_key",ignoreDuplicates:true});if(e)throw e;}
   }
-  async function syncSingletons() {
-    const id=user.id;
-    const notes=localStorage.getItem(scoped(keys.notes))||"";
-    const settings=JSON.parse(localStorage.getItem(scoped(keys.settings))||"{}");
-    const a=await client.from("user_notes").upsert({user_id:id,content:notes},{onConflict:"user_id"});
-    if(a.error)throw a.error;
-    const b=await client.from("user_settings").upsert({user_id:id,goal:settings.goal??null},{onConflict:"user_id"});
-    if(b.error)throw b.error;
+  async function syncSingletons(){
+    const id=user.id,[nr,sr]=await Promise.all([client.from("user_notes").select("user_id").eq("user_id",id).maybeSingle(),client.from("user_settings").select("user_id").eq("user_id",id).maybeSingle()]);
+    if(nr.error)throw nr.error;if(sr.error)throw sr.error;
+    if(!nr.data){const notes=localStorage.getItem(scoped(keys.notes));if(notes){const {error}=await client.from("user_notes").insert({user_id:id,content:notes});if(error)throw error;}}
+    if(!sr.data){const raw=localStorage.getItem(scoped(keys.settings)),settings=raw?JSON.parse(raw):{};if(Object.prototype.hasOwnProperty.call(settings,"goal")){const {error}=await client.from("user_settings").insert({user_id:id,goal:settings.goal??null});if(error)throw error;}}
   }
   async function syncNow() {
     if(!client||!user||syncing)return false;
