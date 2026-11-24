@@ -167,6 +167,7 @@
       const { data: settings } = await client.from("user_settings").select("user_id").eq("user_id",id).maybeSingle();
       if (!settings && g.settings && Object.prototype.hasOwnProperty.call(g.settings,"goal")) { const { error } = await client.from("user_settings").insert({user_id:id,goal:g.settings.goal}); if (error) throw error; }
       await loadCloud();
+      localStorage.setItem("foodlab-import-prompted:"+id,"1");
       showAccount();
       status(tr("Перенос завершён. Локальные данные сохранены.","Import abgeschlossen. Lokale Daten bleiben erhalten."), "success");
     } catch (err) {
@@ -204,7 +205,7 @@
   async function syncFavorites() {
     const id=user.id;let items=[];
     try{items=JSON.parse(localStorage.getItem(scoped(keys.favorites))||"null")?.items||[];}catch{}
-    const rows=items.map(x=>x?.source==="catalog"&&x.id?{user_id:id,favorite_key:"catalog:"+x.id,source:"catalog",catalog_product_id:String(x.id)}:x?.source==="off"&&x.barcode&&x.product?{user_id:id,favorite_key:"off:"+x.barcode,source:"off",barcode:String(x.barcode),product_snapshot:x.product}:null).filter(Boolean);
+    const rows=items.map(x=>x?.source==="catalog"&&x.id?{user_id:id,favorite_key:"catalog:"+x.id,source:"catalog",catalog_product_id:String(x.id),deleted_at:null}:x?.source==="off"&&x.barcode&&x.product?{user_id:id,favorite_key:"off:"+x.barcode,source:"off",barcode:String(x.barcode),product_snapshot:x.product,deleted_at:null}:null).filter(Boolean);
     if(rows.length){const {error}=await client.from("favorites").upsert(rows,{onConflict:"user_id,favorite_key"});if(error)throw error;}
     const {data:remote,error}=await client.from("favorites").select("favorite_key").eq("user_id",id).is("deleted_at",null);
     if(error)throw error;
@@ -238,7 +239,7 @@
     renderButton();
     if(oldId && oldId!==user?.id) await clearUserCache(oldId);
     if(user){
-      try{await loadCloud();closeDialog();}catch(err){status(tr("Не удалось загрузить облачные данные: ","Cloud-Daten konnten nicht geladen werden: ")+friendlyError(err),"error");showAccount();}
+      try{await loadCloud();const guest=guestSnapshot();const hasGuest=guest.diary.length||guest.favorites.length||guest.notes.trim()||guest.settings.goal;if(hasGuest&&localStorage.getItem("foodlab-import-prompted:"+user.id)!=="1"){localStorage.setItem("foodlab-import-prompted:"+user.id,"1");showImport();}else{closeDialog();}}catch(err){status(tr("Не удалось загрузить облачные данные: ","Cloud-Daten konnten nicht geladen werden: ")+friendlyError(err),"error");showAccount();}
     } else {
       window.dispatchEvent(new Event("foodlab:account-data-loaded"));
     }
