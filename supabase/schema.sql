@@ -14,18 +14,11 @@ create table if not exists public.diary_entries (
 create table if not exists public.favorites (
   user_id uuid not null references auth.users(id) on delete cascade,
   favorite_key text not null,
-  source text not null check (source in ('catalog','off')),
-  catalog_product_id text,
-  barcode text,
-  product_snapshot jsonb,
+  source text not null check (source = 'catalog'),
+  catalog_product_id text not null,
   updated_at timestamptz not null default now(),
   deleted_at timestamptz,
   primary key (user_id, favorite_key),
-  check (
-    (source = 'catalog' and catalog_product_id is not null and barcode is null)
-    or
-    (source = 'off' and barcode is not null and product_snapshot is not null)
-  )
 );
 
 create table if not exists public.user_notes (
