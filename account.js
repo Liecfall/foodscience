@@ -60,6 +60,7 @@
   function showAuth(mode = "login", message = "") {
     const box = $("accountContent");
     if (!box) return;
+    if (!client) { box.innerHTML = '<div class="kicker">FOODLAB / ACCOUNT</div><h2 id="accountDialogTitle" class="account-title">' + tr("Аккаунты ещё не настроены","Konten sind noch nicht eingerichtet") + '</h2><p class="account-copy">' + tr("Добавь URL проекта Supabase и публичный publishable key в supabase-config.js, затем настрой Auth и SQL по инструкции в supabase/README.md.","Trage die Supabase-Projekt-URL und den öffentlichen Publishable Key in supabase-config.js ein und richte Auth und SQL gemäß supabase/README.md ein.") + '</p>'; openDialog(); return; }
     const title = mode === "register" ? tr("Создать аккаунт", "Konto erstellen") :
       mode === "reset" ? tr("Восстановить пароль", "Passwort zurücksetzen") :
       mode === "new-password" ? tr("Новый пароль", "Neues Passwort") :
@@ -258,6 +259,7 @@
     const url=URL.createObjectURL(blob),a=document.createElement("a");a.href=url;a.download="foodlab-export.json";a.click();URL.revokeObjectURL(url);
   }
   window.addEventListener("foodlab:local-data-changed",scheduleSync);
+  window.addEventListener("online",scheduleSync);
   window.addEventListener("foodlab:account-language",renderButton);
   ensureUI();
   if (!window.supabase?.createClient || !CFG.url || !CFG.publishableKey || CFG.url.includes("YOUR_PROJECT") || CFG.publishableKey.includes("YOUR_")) {
