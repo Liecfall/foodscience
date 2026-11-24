@@ -6,9 +6,10 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Caveat:wght@500;600;700&family=Nunito+Sans:opsz,wght@6..12,400;500;600;700;800&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="style.css?v=diary-v2">
+<link rel="stylesheet" href="style.css?v=account-v1">
+<link rel="stylesheet" href="account.css">
 </head><body>
-<header><div class="wrap nav"><button type="button" class="menu-toggle" id="menuToggle" aria-label="Открыть меню" aria-expanded="false"><span></span><span></span><span></span></button><a class="brand" href="#home"><span class="mark">f.</span> foodlab</a><span class="nav-spacer"></span><button type="button" class="lang" id="langBtn">DE / RU</button></div></header>
+<header><div class="wrap nav"><button type="button" class="menu-toggle" id="menuToggle" aria-label="Открыть меню" aria-expanded="false"><span></span><span></span><span></span></button><a class="brand" href="#home"><span class="mark">f.</span> foodlab</a><span class="nav-spacer"></span><button type="button" class="account-btn" id="accountBtn">Войти</button><button type="button" class="lang" id="langBtn">DE / RU</button></div></header>
 <main id="home"><div class="wrap">
 <section class="hero"><div><div class="eyebrow" data-t="eyebrow">Еда — понятнее, чем кажется</div><h1 data-html="heroTitle">Знай, что<br><em>ты ешь.</em></h1><p class="lead" data-t="heroLead">Независимый справочник о продуктах питания. Разбираемся в составе, пищевой ценности, маркировке и хранении — простым языком.</p><div class="actions"><a class="btn" href="#catalog" data-t="explore">Открыть энциклопедию ↘</a><a class="btn ghost" href="#label" data-t="labelButton">Как читать этикетку</a><button type="button" class="btn ghost" data-open-nutrition data-t="heroCalculator">Калькулятор КБЖУ</button></div></div><div class="hero-art">
 <svg class="hero-illustration" viewBox="0 0 460 340" aria-hidden="true" focusable="false">
@@ -79,6 +80,10 @@
  <p class="diary-foot">Расчёт ориентировочный. Для точных значений сверяйся с упаковкой продукта.</p>
 </aside>
 
+<dialog class="account-dialog" id="accountDialog" aria-labelledby="accountDialogTitle"><div class="account-dialog-head"><button type="button" class="close" id="accountClose" aria-label="Close">×</button></div><div id="accountContent"></div></dialog>
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script src="supabase-config.js"></script>
+<script src="account.js"></script>
 <script src="food-data.js?v=304" defer></script>
 <script src="tea-data.js" defer></script>
 <script src="script.js?v=305" defer></script>
