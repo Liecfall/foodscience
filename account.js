@@ -192,8 +192,13 @@
     status(tr("Облачные данные загружены","Cloud-Daten geladen"),"success");
   }
   async function syncDiary() {
-    const id=user.id; let arr=[];
-    try { const raw=JSON.parse(localStorage.getItem(scoped(keys.diary))||"null"); arr=Array.isArray(raw)?raw:raw?.entries||[]; } catch {}
+    const id=user.id;
+    // Never turn a damaged/missing cache into an empty diary: that could mark all remote rows deleted.
+    const raw = localStorage.getItem(scoped(keys.diary));
+    if (raw === null) throw new Error("Local diary cache is missing; cloud sync skipped to protect remote entries.");
+    const parsed = JSON.parse(raw);
+    const arr = Array.isArray(parsed) ? parsed : parsed?.entries;
+    if (!Array.isArray(arr)) throw new Error("Local diary cache has an unsupported format; cloud sync skipped.");
     const rows=arr.filter(x=>x&&x.id).map(x=>({user_id:id,entry_id:String(x.id),data:x}));
     if(rows.length){const {error}=await client.from("diary_entries").upsert(rows,{onConflict:"user_id,entry_id"});if(error)throw error;}
     const {data:remote,error}=await client.from("diary_entries").select("entry_id").eq("user_id",id).is("deleted_at",null);
@@ -203,8 +208,13 @@
     if(gone.length){const {error:e}=await client.from("diary_entries").update({deleted_at:new Date().toISOString()}).eq("user_id",id).in("entry_id",gone);if(e)throw e;}
   }
   async function syncFavorites() {
-    const id=user.id;let items=[];
-    try{items=JSON.parse(localStorage.getItem(scoped(keys.favorites))||"null")?.items||[];}catch{}
+    const id=user.id;
+    // Never turn a damaged/missing cache into []: that could mark all remote favorites deleted.
+    const raw = localStorage.getItem(scoped(keys.favorites));
+    if (raw === null) throw new Error("Local favorites cache is missing; cloud sync skipped to protect remote favorites.");
+    const parsed = JSON.parse(raw);
+    const items = parsed?.items;
+    if (parsed?.version !== 1 || !Array.isArray(items)) throw new Error("Local favorites cache has an unsupported format; cloud sync skipped.");
     const rows=items.map(x=>x?.source==="catalog"&&x.id?{user_id:id,favorite_key:"catalog:"+x.id,source:"catalog",catalog_product_id:String(x.id),deleted_at:null}:x?.source==="off"&&x.barcode&&x.product?{user_id:id,favorite_key:"off:"+x.barcode,source:"off",barcode:String(x.barcode),product_snapshot:x.product,deleted_at:null}:null).filter(Boolean);
     if(rows.length){const {error}=await client.from("favorites").upsert(rows,{onConflict:"user_id,favorite_key"});if(error)throw error;}
     const {data:remote,error}=await client.from("favorites").select("favorite_key").eq("user_id",id).is("deleted_at",null);
@@ -222,10 +232,10 @@
     if(b.error)throw b.error;
   }
   async function syncNow() {
-    if(!client||!user||syncing)return;
+    if(!client||!user||syncing)return false;
     syncing=true;status(tr("Синхронизация…","Synchronisierung…"));
-    try{await syncDiary();await syncFavorites();await syncSingletons();status(tr("Облако синхронизировано","Cloud synchronisiert"),"success");}
-    catch(err){status(tr("Нет подтверждения облачного сохранения: ","Cloud-Speicherung nicht bestätigt: ")+friendlyError(err),"error");}
+    try{await syncDiary();await syncFavorites();await syncSingletons();status(tr("Облако синхронизировано","Cloud synchronisiert"),"success");return true;}
+    catch(err){status(tr("Нет подтверждения облачного сохранения: ","Cloud-Speicherung nicht bestätigt: ")+friendlyError(err),"error");return false;}
     finally{syncing=false;}
   }
   function scheduleSync(){clearTimeout(syncTimer);syncTimer=setTimeout(syncNow,700);}
@@ -239,13 +249,19 @@
     renderButton();
     if(oldId && oldId!==user?.id) await clearUserCache(oldId);
     if(user){
-      try{await loadCloud();const guest=guestSnapshot();const hasGuest=guest.diary.length||guest.favorites.length||guest.notes.trim()||guest.settings.goal;if(hasGuest&&localStorage.getItem("foodlab-import-prompted:"+user.id)!=="1"){localStorage.setItem("foodlab-import-prompted:"+user.id,"1");showImport();}else{closeDialog();}}catch(err){status(tr("Не удалось загрузить облачные данные: ","Cloud-Daten konnten nicht geladen werden: ")+friendlyError(err),"error");showAccount();}
+      try{await loadCloud();const guest=guestSnapshot();const hasGuest=guest.diary.length||guest.favorites.length||guest.notes.trim()||guest.settings.goal;if(hasGuest&&localStorage.getItem("foodlab-import-prompted:"+user.id)!=="1"){localStorage.setItem("foodlab-import-prompted:"+user.id,"1");showImport();}else{closeDialog();}}catch(err){showAccount();status(tr("Не удалось загрузить облачные данные: ","Cloud-Daten konnten nicht geladen werden: ")+friendlyError(err),"error");}
     } else {
       window.dispatchEvent(new Event("foodlab:account-data-loaded"));
     }
   }
   async function logout() {
-    if(!client)return;
+    if(!client||!user)return;
+    clearTimeout(syncTimer);
+    const synced = await syncNow();
+    if (!synced) {
+      status(tr("Выход отменён: сначала дождись успешной синхронизации, чтобы не потерять изменения.","Abmeldung abgebrochen: Bitte zuerst die Synchronisierung abwarten, damit keine Änderungen verloren gehen."),"error");
+      return;
+    }
     const {error}=await client.auth.signOut();
     if(error){status(friendlyError(error),"error");return;}
     closeDialog();
