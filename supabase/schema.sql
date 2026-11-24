@@ -18,7 +18,7 @@ create table if not exists public.favorites (
   catalog_product_id text not null,
   updated_at timestamptz not null default now(),
   deleted_at timestamptz,
-  primary key (user_id, favorite_key),
+  primary key (user_id, favorite_key)
 );
 
 create table if not exists public.user_notes (
