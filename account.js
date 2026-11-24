@@ -202,7 +202,7 @@
   async function syncNow() {
     if(!client||!user||syncing)return false;
     syncing=true;status(tr("Синхронизация…","Synchronisierung…"));
-    try{await syncDiary();await syncFavorites();await syncSingletons();status(tr("Облако синхронизировано","Cloud synchronisiert"),"success");return true;}
+    try{await syncDiary();await syncFavorites();await syncSingletons();status(tr("Новые записи синхронизированы. Изменения существующих записей и удаления пока не синхронизируются.","Neue Einträge synchronisiert. Änderungen bestehender Einträge und Löschungen werden noch nicht synchronisiert."),"success");return true;}
     catch(err){status(tr("Нет подтверждения облачного сохранения: ","Cloud-Speicherung nicht bestätigt: ")+friendlyError(err),"error");return false;}
     finally{syncing=false;}
   }
