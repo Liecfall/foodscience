@@ -1,0 +1,21 @@
+/* FoodLab account interface */
+.account-btn{border:1px solid var(--outline);background:var(--paper);color:var(--green);border-radius:14px;padding:9px 14px;font:600 13px "Nunito Sans",system-ui;cursor:pointer;min-height:42px}
+.account-dialog{width:min(460px,calc(100% - 28px));max-width:460px;max-height:min(88vh,720px);border:1px solid var(--outline);border-radius:8px 28px 8px 8px;background:var(--paper);color:var(--ink);padding:26px;box-shadow:0 24px 80px #101b1640}
+.account-dialog::backdrop{background:#101b16a8;backdrop-filter:blur(3px)}
+.account-dialog-head{display:flex;justify-content:flex-end;margin:-10px -8px 4px}
+.account-dialog .close{position:static}
+.account-title{font:500 32px/1.08 Georgia,serif;margin:12px 42px 8px 0;color:var(--green)}
+.account-copy{font-size:13px;line-height:1.55;color:var(--muted)}
+.auth-form{display:grid;gap:9px;margin-top:18px}
+.auth-form label{font-size:12px;font-weight:800;color:var(--green)}
+.auth-form input{width:100%;min-width:0;border:1px solid var(--outline);border-radius:11px;background:#fffdf8;padding:12px;color:var(--ink);font:inherit}
+.auth-password{display:flex;gap:6px}.auth-password button{border:1px solid var(--outline);background:#fffdf8;border-radius:10px;min-width:44px}
+.auth-form .btn{width:100%;margin-top:5px}
+.auth-message,.account-message{font-size:12px;line-height:1.5;color:var(--muted);overflow-wrap:anywhere}
+.auth-message:empty{display:none}
+.account-message[data-kind="error"],.auth-message[data-kind="error"]{color:#a33b2e}
+.auth-links,.account-actions{display:flex;flex-wrap:wrap;gap:9px;margin-top:16px}
+.auth-links button{border:0;background:transparent;color:var(--green);text-decoration:underline;text-underline-offset:3px;padding:7px 0;cursor:pointer;font:600 12px inherit}
+.account-actions{display:grid}.account-actions .btn{width:100%}
+.import-counts{padding-left:20px;font-size:13px;line-height:1.9}
+@media(max-width:560px){.account-dialog{padding:20px 18px;border-radius:0 22px 0 0}.account-title{font-size:28px}.account-btn{padding:8px 10px;font-size:12px}}
