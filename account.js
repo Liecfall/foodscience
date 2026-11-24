@@ -198,8 +198,10 @@
     if (raw === null) throw new Error("Local diary cache is missing; cloud sync skipped to protect remote entries.");
     const parsed = JSON.parse(raw);
     const arr = Array.isArray(parsed) ? parsed : parsed?.entries;
-    if (!Array.isArray(arr)) throw new Error("Local diary cache has an unsupported format; cloud sync skipped.");
-    const rows=arr.filter(x=>x&&x.id).map(x=>({user_id:id,entry_id:String(x.id),data:x}));
+    if (!Array.isArray(arr) || arr.some(x => !x || typeof x !== "object" || typeof x.id !== "string" || !x.id.trim())) {
+      throw new Error("Local diary cache contains invalid entries; cloud sync skipped to protect remote data.");
+    }
+    const rows=arr.map(x=>({user_id:id,entry_id:String(x.id),data:x}));
     if(rows.length){const {error}=await client.from("diary_entries").upsert(rows,{onConflict:"user_id,entry_id"});if(error)throw error;}
     const {data:remote,error}=await client.from("diary_entries").select("entry_id").eq("user_id",id).is("deleted_at",null);
     if(error)throw error;
@@ -215,7 +217,8 @@
     const parsed = JSON.parse(raw);
     const items = parsed?.items;
     if (parsed?.version !== 1 || !Array.isArray(items)) throw new Error("Local favorites cache has an unsupported format; cloud sync skipped.");
-    const rows=items.map(x=>x?.source==="catalog"&&x.id?{user_id:id,favorite_key:"catalog:"+x.id,source:"catalog",catalog_product_id:String(x.id),deleted_at:null}:x?.source==="off"&&x.barcode&&x.product?{user_id:id,favorite_key:"off:"+x.barcode,source:"off",barcode:String(x.barcode),product_snapshot:x.product,deleted_at:null}:null).filter(Boolean);
+    const rows=items.map(x=>x?.source==="catalog"&&typeof x.id==="string"&&x.id.trim()?{user_id:id,favorite_key:"catalog:"+x.id,source:"catalog",catalog_product_id:x.id,deleted_at:null}:x?.source==="off"&&typeof x.barcode==="string"&&/^[0-9]{8,14}$/.test(x.barcode)&&x.product&&typeof x.product==="object"?{user_id:id,favorite_key:"off:"+x.barcode,source:"off",barcode:x.barcode,product_snapshot:x.product,deleted_at:null}:null);
+    if (rows.some(x => !x)) throw new Error("Local favorites cache contains invalid entries; cloud sync skipped to protect remote data.");
     if(rows.length){const {error}=await client.from("favorites").upsert(rows,{onConflict:"user_id,favorite_key"});if(error)throw error;}
     const {data:remote,error}=await client.from("favorites").select("favorite_key").eq("user_id",id).is("deleted_at",null);
     if(error)throw error;
