@@ -123,3 +123,7 @@ for each row execute function public.foodlab_set_updated_at();
 drop trigger if exists user_settings_updated_at on public.user_settings;
 create trigger user_settings_updated_at before update on public.user_settings
 for each row execute function public.foodlab_set_updated_at();
+
+-- Explicit client privileges: authenticated users only; RLS remains mandatory.
+revoke all on public.diary_entries, public.favorites, public.user_notes, public.user_settings from anon;
+grant select, insert, update, delete on public.diary_entries, public.favorites, public.user_notes, public.user_settings to authenticated;
