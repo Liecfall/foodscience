@@ -1,6 +1,6 @@
-/* Public browser configuration. Replace these two values in Supabase settings.
-   Only the project URL and publishable/anon key belong here. Never add service_role. */
+/* Public browser configuration. Only the project URL and publishable key belong here.
+   Never add a secret key or service_role key. */
 window.FOODLAB_SUPABASE_CONFIG = {
-  url: "https://YOUR_PROJECT_REF.supabase.co",
-  publishableKey: "YOUR_SUPABASE_PUBLISHABLE_KEY"
+  url: "https://avgvvekorkdgswrchxuf.supabase.co",
+  publishableKey: "sb_publishable_WpE71nNfnHTrkZ602W0xhg_NUX0zbBk"
 };
