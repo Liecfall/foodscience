@@ -8,8 +8,8 @@
 .account-copy{font-size:13px;line-height:1.55;color:var(--muted)}
 .auth-form{display:grid;gap:9px;margin-top:18px}
 .auth-form label{font-size:12px;font-weight:800;color:var(--green)}
-.auth-form input{width:100%;min-width:0;border:1px solid var(--outline);border-radius:11px;background:#fffdf8;padding:12px;color:var(--ink);font:inherit}
-.auth-password{display:flex;gap:6px}.auth-password button{border:1px solid var(--outline);background:#fffdf8;border-radius:10px;min-width:44px}
+.auth-form input{width:100%;min-width:0;border:1px solid var(--outline);border-radius:11px;background:#f5ead9;padding:12px;color:var(--ink);font:inherit}
+.auth-password{display:flex;gap:6px}.auth-password button{border:1px solid var(--outline);background:#f5ead9;border-radius:10px;min-width:44px}
 .auth-form .btn{width:100%;margin-top:5px}
 .auth-message,.account-message{font-size:12px;line-height:1.5;color:var(--muted);overflow-wrap:anywhere}
 .auth-message:empty{display:none}

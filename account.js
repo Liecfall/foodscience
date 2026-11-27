@@ -52,7 +52,7 @@
     const btn = $("accountBtn");
     if (!btn) return;
     btn.textContent = user ? tr("Аккаунт", "Konto") : tr("Войти", "Anmelden");
-    btn.setAttribute("aria-label", user ? tr("Открыть аккаунт", "Konto öffnen") : tr("Войти в аккаунт", "Anmelden"));
+    btn.setAttribute("aria-label", user ? tr("Открыть аккаунт", "Konto öffnen") : tr("Войти или создать аккаунт", "Anmelden oder Konto erstellen"));
     btn.title = user ? user.email || "" : "";
   }
   function openDialog() { const d = $("accountDialog"); if (d && !d.open) d.showModal(); }
@@ -139,10 +139,14 @@
     try { settings = JSON.parse(read(keys.settings) || "{}") || {}; } catch {}
     return { diary, favorites, notes, settings };
   }
+  function safeCalorieGoal(value) {
+    return Number.isFinite(value) && value > 0 && value <= 100000 ? value : null;
+  }
   function showImport() {
     const g = guestSnapshot();
-    const has = g.diary.length || g.favorites.length || g.notes.trim() || g.settings.goal;
-    $("accountContent").innerHTML = '<div class="kicker">FOODLAB / IMPORT</div><h2 class="account-title">'+tr("Гостевые данные","Gastdaten")+'</h2><p class="account-copy">'+tr("Найдено на этом устройстве:","Auf diesem Gerät gefunden:")+'</p><ul class="import-counts"><li>'+tr("Записей дневника: ","Tagebucheinträge: ")+g.diary.length+'</li><li>'+tr("Избранных продуктов: ","Favoriten: ")+g.favorites.length+'</li><li>'+tr("Блокнот: ","Notizbuch: ")+(g.notes.trim()?tr("есть текст","Text vorhanden"):tr("пусто","leer"))+'</li><li>'+tr("Цель калорий: ","Kalorienziel: ")+(g.settings.goal || "—")+'</li></ul><p class="account-copy">'+tr("Импорт добавит только отсутствующие записи. Облачные данные не будут перезаписаны. Локальный оригинал останется на устройстве.","Der Import ergänzt nur fehlende Einträge. Cloud-Daten werden nicht überschrieben. Das lokale Original bleibt erhalten.")+'</p><div class="account-actions"><button class="btn" id="confirmImport" '+(has?"":"disabled")+'>'+tr("Подтвердить перенос","Import bestätigen")+'</button><button class="btn ghost" id="cancelImport">'+tr("Не сейчас","Nicht jetzt")+'</button></div><p id="importStatus" class="account-message" role="status" aria-live="polite"></p>';
+    const goal = safeCalorieGoal(g.settings.goal);
+    const has = g.diary.length || g.favorites.length || g.notes.trim() || goal;
+    $("accountContent").innerHTML = '<div class="kicker">FOODLAB / IMPORT</div><h2 class="account-title">'+tr("Гостевые данные","Gastdaten")+'</h2><p class="account-copy">'+tr("Найдено на этом устройстве:","Auf diesem Gerät gefunden:")+'</p><ul class="import-counts"><li>'+tr("Записей дневника: ","Tagebucheinträge: ")+g.diary.length+'</li><li>'+tr("Избранных продуктов: ","Favoriten: ")+g.favorites.length+'</li><li>'+tr("Блокнот: ","Notizbuch: ")+(g.notes.trim()?tr("есть текст","Text vorhanden"):tr("пусто","leer"))+'</li><li>'+tr("Цель калорий: ","Kalorienziel: ")+(goal ?? "—")+'</li></ul><p class="account-copy">'+tr("Импорт добавит только отсутствующие записи. Облачные данные не будут перезаписаны. Локальный оригинал останется на устройстве.","Der Import ergänzt nur fehlende Einträge. Cloud-Daten werden nicht überschrieben. Das lokale Original bleibt erhalten.")+'</p><div class="account-actions"><button class="btn" id="confirmImport" '+(has?"":"disabled")+'>'+tr("Подтвердить перенос","Import bestätigen")+'</button><button class="btn ghost" id="cancelImport">'+tr("Не сейчас","Nicht jetzt")+'</button></div><p id="importStatus" class="account-message" role="status" aria-live="polite"></p>';
     $("confirmImport").addEventListener("click", importGuest);
     $("cancelImport").addEventListener("click", showAccount);
   }
@@ -154,7 +158,7 @@
       const fr=g.favorites.filter(x=>x?.source==="catalog"&&typeof x.id==="string"&&x.id.trim()).map(x=>({user_id:id,favorite_key:"catalog:"+x.id,source:"catalog",catalog_product_id:x.id}));
       if(fr.length){const {error}=await client.from("favorites").upsert(fr,{onConflict:"user_id,favorite_key",ignoreDuplicates:true});if(error)throw error;}
       const nr=await client.from("user_notes").select("user_id").eq("user_id",id).maybeSingle();if(nr.error)throw nr.error;if(!nr.data&&g.notes){const {error}=await client.from("user_notes").insert({user_id:id,content:g.notes});if(error)throw error;}
-      const sr=await client.from("user_settings").select("user_id").eq("user_id",id).maybeSingle();if(sr.error)throw sr.error;if(!sr.data&&Object.prototype.hasOwnProperty.call(g.settings,"goal")){const {error}=await client.from("user_settings").insert({user_id:id,goal:g.settings.goal??null});if(error)throw error;}
+      const sr=await client.from("user_settings").select("user_id").eq("user_id",id).maybeSingle();if(sr.error)throw sr.error;if(!sr.data&&Object.prototype.hasOwnProperty.call(g.settings,"goal")){const {error}=await client.from("user_settings").insert({user_id:id,goal:safeCalorieGoal(g.settings.goal)});if(error)throw error;}
       await loadCloud();localStorage.setItem("foodlab-import-prompted:"+id,"1");showAccount();status(tr("Перенос завершён. Локальные данные сохранены.","Import abgeschlossen. Lokale Daten bleiben erhalten."),"success");
     }catch(err){msg.textContent=tr("Перенос выполнен не полностью. Его можно безопасно повторить. ","Der Import war unvollständig und kann sicher wiederholt werden. ")+friendlyError(err);$("confirmImport").disabled=false;}
   }
@@ -180,7 +184,7 @@
     localStorage.setItem(scoped(keys.diary),JSON.stringify({version:2,entries:diary}));
     localStorage.setItem(scoped(keys.favorites),JSON.stringify({version:1,items:favorites}));
     if(n.data)localStorage.setItem(scoped(keys.notes),n.data.content||"");else if(localStorage.getItem(scoped(keys.notes))===null)localStorage.setItem(scoped(keys.notes),"");
-    if(s.data)localStorage.setItem(scoped(keys.settings),JSON.stringify({goal:s.data.goal??null}));else if(localStorage.getItem(scoped(keys.settings))===null)localStorage.setItem(scoped(keys.settings),JSON.stringify({goal:null}));
+    if(s.data)localStorage.setItem(scoped(keys.settings),JSON.stringify({goal:safeCalorieGoal(s.data.goal)}));else if(localStorage.getItem(scoped(keys.settings))===null)localStorage.setItem(scoped(keys.settings),JSON.stringify({goal:null}));
     window.dispatchEvent(new Event("foodlab:account-data-loaded"));status(tr("Данные объединены без удаления записей.","Daten wurden ohne Löschen von Einträgen zusammengeführt."),"success");
   }
   async function syncDiary(){
@@ -197,7 +201,7 @@
     const id=user.id,[nr,sr]=await Promise.all([client.from("user_notes").select("user_id").eq("user_id",id).maybeSingle(),client.from("user_settings").select("user_id").eq("user_id",id).maybeSingle()]);
     if(nr.error)throw nr.error;if(sr.error)throw sr.error;
     if(!nr.data){const notes=localStorage.getItem(scoped(keys.notes));if(notes){const {error}=await client.from("user_notes").insert({user_id:id,content:notes});if(error)throw error;}}
-    if(!sr.data){const raw=localStorage.getItem(scoped(keys.settings)),settings=raw?JSON.parse(raw):{};if(Object.prototype.hasOwnProperty.call(settings,"goal")){const {error}=await client.from("user_settings").insert({user_id:id,goal:settings.goal??null});if(error)throw error;}}
+    if(!sr.data){const raw=localStorage.getItem(scoped(keys.settings)),settings=raw?JSON.parse(raw):{};if(Object.prototype.hasOwnProperty.call(settings,"goal")){const {error}=await client.from("user_settings").insert({user_id:id,goal:safeCalorieGoal(settings.goal)});if(error)throw error;}}
   }
   async function syncNow() {
     if(!client||!user||syncing)return false;
