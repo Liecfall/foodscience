@@ -4,7 +4,7 @@
 .account-dialog::backdrop{background:#101b16a8;backdrop-filter:blur(3px)}
 .account-dialog-head{display:flex;justify-content:flex-end;margin:-10px -8px 4px}
 .account-dialog .close{position:static}
-.account-title{font:500 32px/1.08 Georgia,serif;margin:12px 42px 8px 0;color:var(--green)}
+.account-title{font:600 32px/1.08 "Nunito Sans",system-ui,sans-serif;margin:12px 42px 8px 0;color:var(--green)}
 .account-copy{font-size:13px;line-height:1.55;color:var(--muted)}
 .auth-form{display:grid;gap:9px;margin-top:18px}
 .auth-form label{font-size:12px;font-weight:800;color:var(--green)}

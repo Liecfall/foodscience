@@ -780,3 +780,14 @@ header{background:#f3e4d3ed url("assets/foodlab-watercolor/paper.jpg") center/co
  .catalog-index .category-grid::-webkit-scrollbar-track{background:#ead8c2;border-radius:3px}
  .catalog-index .category-grid::-webkit-scrollbar-thumb{background:#9a7758;border-radius:3px}
 }
+
+/* Use the site UI font consistently for headings on desktop and mobile. */
+body *:is(h1,h2,h3,h4,h5,h6),
+body .modal-title,
+body .account-title{
+ font-family:"Nunito Sans",Inter,system-ui,-apple-system,"Segoe UI",sans-serif!important;
+ font-style:normal!important;
+ letter-spacing:normal;
+}
+body *:is(h1,h2,h3,h4,h5,h6) em{font-style:normal!important}
+@media(max-width:390px){.hero h1{font-size:clamp(34px,9.8vw,38px);line-height:1.04;letter-spacing:normal}}
