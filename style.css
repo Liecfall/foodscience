@@ -94,6 +94,87 @@ body.drawer-open{overflow:hidden}
 .tea-empty{text-align:center;padding:35px;color:#806f60}.tea-footer{text-align:center;font-size:9px;letter-spacing:.18em;color:#a28d7c;margin-top:35px}
 @media(max-width:620px){.tea-controls{grid-template-columns:1fr}.tea-grid{grid-template-columns:1fr}.tea-hero{padding:29px 21px}.tea-card{padding:14px}.tea-intro{display:block}.tea-intro strong{display:block;margin-bottom:4px}}
 
+/* FoodLab visual refinement: clearer paper surfaces, stronger type and touch states. */
+:root{
+  --bg:#f3f0e7;
+  --paper:#fffdf8;
+  --ink:#202b25;
+  --muted:#58645c;
+  --green:#183c30;
+  --green2:#426b52;
+  --sage:#e6ecdf;
+  --lime:#d8e6b2;
+  --line:#ddd9cb;
+  --rust:#a95434;
+  --shadow:0 12px 32px #25392a0d;
+  --outline:#b9b19e;
+  accent-color:var(--green2);
+}
+html{scroll-padding-top:calc(82px + env(safe-area-inset-top,0px))}
+body{font-family:"Nunito Sans",system-ui,-apple-system,"Segoe UI",sans-serif;line-height:1.6}
+::selection{background:#d8e6b2;color:#183c30}
+:focus-visible{outline:3px solid #849d62;outline-offset:3px}
+header{background:#f5f2e9f5;border-bottom-color:#d8d3c4;box-shadow:0 5px 18px #1d29230a}
+.nav{min-height:70px}
+.brand{font-size:23px}
+.mark{border-radius:11px 11px 11px 4px}
+h1,h2,h3,.product h3,.info-card h3,.tool h3,.note-head h3,.tea-hero h1,.tea-card h3{font-family:Georgia,"Times New Roman",serif}
+h1{letter-spacing:-.035em}
+.eyebrow,.kicker{letter-spacing:.13em}
+.hero{gap:clamp(28px,5vw,64px);padding-top:clamp(48px,7vw,78px)}
+.hero-art{border-radius:8px 72px 8px 8px;box-shadow:0 20px 48px #183c3020}
+section{scroll-margin-top:calc(82px + env(safe-area-inset-top,0px))}
+.section-head{margin-bottom:30px}
+.section-head h2{letter-spacing:-.025em}
+.catalog-tools{gap:12px}
+.search,.field input,.field select,.note-form input,.tea-controls input,.tea-controls select,.auth-form input{border-color:#d8d2c3;border-radius:12px;transition:border-color .18s,box-shadow .18s}
+.search:focus,.field input:focus,.field select:focus,.note-form input:focus,.tea-controls input:focus,.tea-controls select:focus,.auth-form input:focus{outline:none;border-color:#78906b;box-shadow:0 0 0 3px #78906b24}
+.btn,.chip,.category,.menu-toggle,.lang,.account-btn,.tea-back{transition:transform .16s ease,background-color .16s ease,border-color .16s ease,box-shadow .16s ease}
+.btn:hover,.category:hover,.tea-back:hover{transform:translateY(-2px)}
+.btn:active,.category:active,.tea-back:active{transform:translateY(0)}
+.btn{border-radius:12px}
+.product{border-color:#e2ddcf;border-radius:8px 20px 8px 8px;box-shadow:0 8px 22px #25392a0b}
+.product:hover{box-shadow:0 14px 28px #25392a14}
+.product h3{letter-spacing:-.015em}
+.tag{background:#e9eee2;color:#31533e}
+.callout{border-radius:8px 30px 8px 8px}
+.label-step{background:#ffffff16;border-color:#ffffff36}
+.info-card,.tool,.notebook,.tea-card{box-shadow:0 8px 22px #25392a08}
+.info-card,.tool{border-radius:8px 20px 8px 8px}
+.result{background:#e8eee1}
+.mobile-journal-nav{padding-bottom:max(8px,env(safe-area-inset-bottom,0px));background:#fffdf8f5;border-top-color:#d8d3c4;box-shadow:0 -8px 24px #1d29230d;backdrop-filter:blur(12px)}
+.mobile-journal-nav a,.mobile-journal-nav button{min-height:52px}
+.tea-hero{border-radius:24px 8px 24px 8px}
+.tea-card{border-color:#e2d5c7}
+.tea-card h3{letter-spacing:-.015em}
+@media(max-width:850px){
+  .hero{gap:28px}
+  .hero-art{border-radius:8px 44px 8px 8px}
+}
+@media(max-width:560px){
+  body{padding-bottom:calc(72px + env(safe-area-inset-bottom,0px))}
+  .wrap{width:calc(100% - 32px)}
+  .nav{height:62px;min-height:62px;gap:12px}
+  .brand{font-size:21px}
+  .hero{padding-top:30px;gap:22px}
+  h1{font-size:clamp(43px,12vw,52px);line-height:1.02;margin:14px 0 16px}
+  .lead{font-size:15px;line-height:1.58}
+  .hero-art{height:220px;border-radius:8px 36px 8px 8px}
+  .actions{gap:9px}
+  .actions .btn{min-height:46px;width:100%}
+  section{padding:42px 0}
+  .section-head h2{font-size:34px}
+  .products{gap:11px}
+  .product{padding:16px}
+  .catalog-tools{gap:9px}
+  .search{min-height:48px}
+  .chip{min-height:38px}
+  .mobile-journal-nav{min-height:64px}
+}
+@media(prefers-reduced-motion:reduce){
+  *,*::before,*::after{scroll-behavior:auto!important;transition-duration:.01ms!important;animation-duration:.01ms!important;animation-iteration-count:1!important}
+}
+
 
 /* FoodLab 1.6.1 — responsive and interaction hardening */
 :root{scroll-padding-top:88px}
