@@ -828,6 +828,13 @@ body *:is(h1,h2,h3,h4,h5,h6) em{font-style:normal!important}
  .hero .lead,.hero-quick h2,.hero-quick li,.hero-quick-link,.product .sub,.product .desc,.product .macro span,.product .macro strong,.product .open-label,.account-btn,.lang,.calculator-nav,.catalog-heading p,.section-head p,.info-card p,.info-card li,.tea-card h3,.tea-card .tea-group,.tea-card .tea-rec,.tea-intro strong{color:var(--ink)}
  .hero .lead,.hero-quick li,.product .sub,.product .desc,.product .macro span,.catalog-heading p,.section-head p,.info-card p,.info-card li,.tea-card .tea-de,.tea-card p,.tea-card .tea-rec,.tea-intro{color:var(--muted)}
  .lead,.sub,.desc,.catalog-heading p,.info-card p,.info-card li,.product .sub,.product .desc,.product .macro span,.tea-intro,.tea-card p,.tea-card .tea-de,.tea-card .tea-rec,.tea-empty,.tea-footer,.drawer-hint,.drawer-tip,.diary-foot,.diary-item small,.modal-sub,.modal p,.modal li,.account-copy{color:var(--muted)}
+ .navlinks i,.navlinks a i,.navlinks button i{color:var(--green2)}
+ .catalog-status-row .chip{background:#392c24;color:var(--ink);border-color:var(--outline)}
+ .catalog-status-row .chip.active{background:#a64f35;color:#fff2e8;border-color:#c17655}
+ .count,.catalog-status-row .count{color:var(--muted)}
+ .catalog-tools .search::placeholder,.tea-controls input::placeholder{color:#c5ad98;opacity:1}
+ .category strong,.category>span:last-child{color:var(--ink)}
+ .product .macro:nth-child(1){background:linear-gradient(90deg,#667a5533 0 7px,#392c24 7px)}
  .btn,.btn:not(.ghost),.hero .actions .btn:not(.ghost),.hero .calc-hero,.nutrition-fab,.catalog-status-row .chip.active,.drawer-tabs [role=tab][aria-selected=true]{background:#a64f35;color:#fff2e8;border-color:#c17655;box-shadow:0 3px 0 #703523}
  .btn.ghost,.lang,.account-btn,.calculator-nav,.tea-back,.close,.drawer-close,.tea-controls input,.tea-controls select,.catalog-tools .search,.search,.nutrition-drawer input,.nutrition-drawer select,.nutrition-drawer textarea,.free-notes,.auth-form input,.auth-password button,.field input,.field select,.diary-date-tools input,.diary-add-form input,.diary-add-form select,.diary-repeat-panel input,.diary-repeat-panel select,.diary-goal input{background-color:#392c24;color:var(--ink);border-color:var(--outline)}
  .btn.ghost{box-shadow:0 2px 0 #0004}
@@ -854,6 +861,9 @@ body *:is(h1,h2,h3,h4,h5,h6) em{font-style:normal!important}
  .drawer-result,.result-card,.diary-totals{background:#49352a;color:#f5e9dc}
  .drawer-macros div,.diary-item,.recent-product,.repeat-preview,.week-day{background-color:#392c24}
  .diary-item b,.nutri-table td:last-child,.modal h4{color:var(--green2)}
+ .diary-date-tools button,.diary-goal button,.diary-repeat-panel>button,.diary-item-actions button,.week-head button{background:#392c24;color:var(--ink);border-color:var(--line)}
+ .diary-meal{border-top-color:var(--line)}
+ .edit-error,.diary-error{color:#ffad98}.diary-error{background:#492b25;border-color:#9a574b}
  .drawer-tabs{background:#392c24}.drawer-tabs [role=tab]{color:var(--muted)}
  .tea-page{background-color:#211a16;color:var(--ink)}
  .tea-back{background:#392c24;color:var(--ink)}
