@@ -803,83 +803,12 @@ body *:is(h1,h2,h3,h4,h5,h6) em{font-style:normal!important}
  .mobile-journal-nav{bottom:0;padding-bottom:calc(7px + env(safe-area-inset-bottom,0px));border-radius:18px 18px 0 0}
 }
 
-/* Respect the operating system theme while keeping FoodLab's warm paper palette. */
-:root{color-scheme:light}
-@media(prefers-color-scheme:dark){
- :root{
-  color-scheme:dark;
-  --bg:#211a16;--paper:#30251f;--ink:#f5e9dc;--muted:#c5ad98;
-  --green:#e28a68;--green2:#f0a17e;--rust:#e28a68;--sage:#493b30;--lime:#564335;
-  --line:#604b3b;--outline:#8d6d54;--shadow:0 8px 24px #0005;
- }
- body{background-color:var(--bg);background-image:linear-gradient(#211a16e8,#211a16e8),url("assets/foodlab-watercolor/paper.jpg");color:var(--ink)}
- header,.mobile-journal-nav{background-color:#29201bef;background-image:linear-gradient(#29201beb,#29201beb),url("assets/foodlab-watercolor/paper.jpg");border-color:#775b45;box-shadow:0 4px 16px #0005}
- .brand,.navlinks,.navlinks a,.navlinks button,.hero h1,.catalog-heading h2,.catalog-index h3,.section-head h2,.info-card h3,.product h3,.modal-title,.drawer-head h2,.diary-head h3,.account-title{color:var(--ink)}
- .hero,.hero-quick,.catalog-index,.info-card,.account-dialog,.modal-box,.nutrition-drawer,.product,.category,.category .category-art,.label-step,.catalog-tools .search,.search,.nutrition-drawer input,.nutrition-drawer select,.nutrition-drawer textarea,.free-notes,.auth-form input,.auth-password button,.field input,.field select,.close,.drawer-close,.diary-date-tools input,.diary-add-form input,.diary-add-form select,.diary-repeat-panel input,.diary-repeat-panel select,.diary-goal input,.tea-controls input,.tea-controls select,.tea-card,.tea-intro,.drawer-tip,.drawer-result,.drawer-macros div,.diary-item,.recent-product,.repeat-preview,.week-day,.diary-totals,.result-card,.result,.drawer-tabs,.drawer-tabs [role=tab],.product .tag,.product .macro,.product .macro:last-child,.product .favorite-btn,.mobile-journal-nav a,.mobile-journal-nav button{
-  background-color:var(--paper);color:var(--ink);border-color:var(--line)
- }
- .hero,.hero-quick,.catalog-index,.info-card,.account-dialog,.modal-box,.nutrition-drawer,.product,.tea-card{
-  background-image:linear-gradient(#30251fe8,#30251fe8),url("assets/foodlab-watercolor/paper.jpg");
-  border-image:none
- }
- .hero{border-color:var(--line)}
- .hero:after{background-image:none;background-color:var(--line)}
- .hero h1 em,.eyebrow,.kicker,.hero-quick li i,.hero-quick-link,.account-title,.auth-form label,.auth-links button,.account-btn,.lang,.calculator-nav,.product .open-label,.category.active strong,.category.active>span:last-child,.mobile-journal-nav span,.callout .label-step b,.callout .kicker{color:var(--green2)}
- .hero .lead,.hero-quick h2,.hero-quick li,.hero-quick-link,.product .sub,.product .desc,.product .macro span,.product .macro strong,.product .open-label,.account-btn,.lang,.calculator-nav,.catalog-heading p,.section-head p,.info-card p,.info-card li,.tea-card h3,.tea-card .tea-group,.tea-card .tea-rec,.tea-intro strong{color:var(--ink)}
- .hero .lead,.hero-quick li,.product .sub,.product .desc,.product .macro span,.catalog-heading p,.section-head p,.info-card p,.info-card li,.tea-card .tea-de,.tea-card p,.tea-card .tea-rec,.tea-intro{color:var(--muted)}
- .lead,.sub,.desc,.catalog-heading p,.info-card p,.info-card li,.product .sub,.product .desc,.product .macro span,.tea-intro,.tea-card p,.tea-card .tea-de,.tea-card .tea-rec,.tea-empty,.tea-footer,.drawer-hint,.drawer-tip,.diary-foot,.diary-item small,.modal-sub,.modal p,.modal li,.account-copy{color:var(--muted)}
- .navlinks i,.navlinks a i,.navlinks button i{color:var(--green2)}
- .catalog-status-row .chip{background:#392c24;color:var(--ink);border-color:var(--outline)}
- .catalog-status-row .chip.active{background:#a64f35;color:#fff2e8;border-color:#c17655}
- .count,.catalog-status-row .count{color:var(--muted)}
- .catalog-tools .search::placeholder,.tea-controls input::placeholder{color:#c5ad98;opacity:1}
- .category strong,.category>span:last-child{color:var(--ink)}
- .product .macro:nth-child(1){background:linear-gradient(90deg,#667a5533 0 7px,#392c24 7px)}
- .btn,.btn:not(.ghost),.hero .actions .btn:not(.ghost),.hero .calc-hero,.nutrition-fab,.catalog-status-row .chip.active,.drawer-tabs [role=tab][aria-selected=true]{background:#a64f35;color:#fff2e8;border-color:#c17655;box-shadow:0 3px 0 #703523}
- .btn.ghost,.lang,.account-btn,.calculator-nav,.tea-back,.close,.drawer-close,.tea-controls input,.tea-controls select,.catalog-tools .search,.search,.nutrition-drawer input,.nutrition-drawer select,.nutrition-drawer textarea,.free-notes,.auth-form input,.auth-password button,.field input,.field select,.diary-date-tools input,.diary-add-form input,.diary-add-form select,.diary-repeat-panel input,.diary-repeat-panel select,.diary-goal input{background-color:#392c24;color:var(--ink);border-color:var(--outline)}
- .btn.ghost{box-shadow:0 2px 0 #0004}
- .catalog-index{background-image:linear-gradient(#30251fe6,#30251fe6),url("assets/foodlab-watercolor/paper.jpg");border-color:var(--outline)}
- .category{border-bottom-color:var(--line)}
- .category:hover,.category.active,.home-highlights li span,.week-day.selected{background-color:#49362b;border-color:#946b4f}
- .category .category-art{background:#392c24}
- .category .category-art img{filter:drop-shadow(0 1px 1px #0008)}
- .product{background-image:linear-gradient(#30251fe0,#30251fe0),url("assets/foodlab-watercolor/paper.jpg");box-shadow:0 6px 16px #0005}
- .product:hover{border-color:var(--outline);box-shadow:0 8px 19px #0007}
- .product .prod-top{border-right-color:var(--line)}
- .product .tag{background:#49372b;color:#f0b391;border-color:#795940}
- .product .favorite-btn,.modal-favorite{background:#392c24;color:var(--ink);border-color:var(--outline)}
- .product .favorite-btn[aria-pressed=true],.modal-favorite[aria-pressed=true]{background:#57372c;color:#ffad8d;border-color:#d07b5d}
- .product .macro{background:linear-gradient(90deg,#667a5533 0 7px,#392c24 7px);border-color:var(--line)}
- .product .macro:nth-child(2){background:linear-gradient(90deg,#aa8a3433 0 7px,#392c24 7px)}
- .product .macro:nth-child(3){background:linear-gradient(90deg,#56849a33 0 7px,#392c24 7px)}
- .product .macro:nth-child(4){background:linear-gradient(90deg,#a85d3a33 0 7px,#392c24 7px)}
- .product .macro:nth-child(1) strong{color:#a6bd84}.product .macro:nth-child(2) strong{color:#e4c36d}.product .macro:nth-child(3) strong{color:#91c5d9}.product .macro:nth-child(4) strong{color:#f0a17e}
- .callout{background:#633d2e;color:#fff0e4;border:1px solid #93634a}
- .callout .label-step{background:#392c24;border-color:#795a43;color:var(--ink)}
- .callout .label-step span,.callout p{color:#ddc7b4}
- .callout .label-step b,.callout .kicker{color:#f0a17e}
- .drawer-result,.result-card,.diary-totals{background:#49352a;color:#f5e9dc}
- .drawer-macros div,.diary-item,.recent-product,.repeat-preview,.week-day{background-color:#392c24}
- .diary-item b,.nutri-table td:last-child,.modal h4{color:var(--green2)}
- .diary-date-tools button,.diary-goal button,.diary-repeat-panel>button,.diary-item-actions button,.week-head button{background:#392c24;color:var(--ink);border-color:var(--line)}
- .diary-meal{border-top-color:var(--line)}
- .edit-error,.diary-error{color:#ffad98}.diary-error{background:#492b25;border-color:#9a574b}
- .drawer-tabs{background:#392c24}.drawer-tabs [role=tab]{color:var(--muted)}
- .tea-page{background-color:#211a16;color:var(--ink)}
- .tea-back{background:#392c24;color:var(--ink)}
- .tea-intro{background:#30251f;border-color:var(--line)}.tea-intro strong,.tea-card h3{color:var(--ink)}
- .tea-card .tea-group,.tea-rec b{color:#e0a27c}
- .tea-card .tea-rec{border-color:var(--line)}
- .tea-hero{background:linear-gradient(130deg,#2c211c,#604533);border-color:#72513b}
- .footer{background:#35251e;color:#ffede1}.footer p,.footlinks,.footer .brand,.footer .mark{color:#ffede1}
- .account-dialog::backdrop{background:#090706c9}
- .account-message[data-kind=error],.auth-message[data-kind=error]{color:#ff9c88}
- ::selection{background:#9e5239;color:#fff4e8}
-}
+/* Keep the authored FoodLab palette light across browser color preferences. */
+:root{color-scheme:only light}
 
 /* Keep controls and focus indicators legible in user-requested high contrast mode. */
 @media(forced-colors:active){
- :root{color-scheme:light dark}
+ :root{color-scheme:only light}
  body,header,.hero,.hero-quick,.catalog-index,.info-card,.account-dialog,.modal-box,.nutrition-drawer,.product,.category,.category .category-art,.callout,.callout .label-step,.tea-page,.tea-hero,.tea-card,.tea-intro,.mobile-journal-nav,.footer,.drawer-result,.drawer-macros div,.diary-item,.recent-product,.repeat-preview,.week-day,.diary-totals,.result-card,.result,.drawer-tabs,.drawer-tabs [role=tab]{background-image:none!important;background-color:Canvas!important;color:CanvasText!important;box-shadow:none!important;border-color:CanvasText!important}
  input,select,textarea,.free-notes,.auth-password button,.btn,.chip,.lang,.account-btn,.calculator-nav,.tea-back,.close,.drawer-close,.favorite-btn,.modal-favorite,.drawer-tabs [role=tab]{background:ButtonFace!important;color:ButtonText!important;border:1px solid ButtonText!important;box-shadow:none!important}
  a,.hero-quick-link,.product .open-label,.navlinks a{color:LinkText!important}
